@@ -6,6 +6,27 @@
 
 using namespace Rcpp;
 
+// bpcaNet
+List bpcaNet(arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs, double threshold, int maxIterations);
+RcppExport SEXP ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type myMat(myMatSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type D(DSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type hidden(hiddenSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type numberOfNonNAvaluesInEachCol(numberOfNonNAvaluesInEachColSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type nomissIndex(nomissIndexSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type missIndex(missIndexSEXP);
+    Rcpp::traits::input_parameter< int >::type nMissing(nMissingSEXP);
+    Rcpp::traits::input_parameter< int >::type nPcs(nPcsSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< int >::type maxIterations(maxIterationsSEXP);
+    rcpp_result_gen = Rcpp::wrap(bpcaNet(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ppcaNet
 List ppcaNet(arma::mat myMat, int N, int D, arma::mat C, arma::uvec hidden, int nMissing, int nPcs, double threshold, int maxIterations);
 RcppExport SEXP ppcaNet_ppcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP CSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
