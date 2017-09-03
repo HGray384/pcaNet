@@ -3,12 +3,6 @@
 
 using namespace Rcpp ;
 
-
-arma::mat mrdivide(arma::mat A, arma::mat B)
-{
-    return (solve(B.t(), A.t(), arma::solve_opts::fast )).t();
-}
-
 // [[Rcpp::export()]]
 List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs=2, double threshold=1e-4, int maxIterations=200) {
   
