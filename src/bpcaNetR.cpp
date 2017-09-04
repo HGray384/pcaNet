@@ -8,7 +8,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   
   //double ss, ss_old, rel_ch, objective, TSS;
   
-  double tau, dtau, tauold, trS;
+  double tau, dtau, tauold, trS, ss;
   int nNotMissing = N - nMissing;
   int ind;
   
@@ -23,6 +23,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   arma::mat      Vfull(D, D);
   arma::vec      Sfull(D);
   arma::mat      W(D, nPcs);
+  std::cout << D << " " << nPcs << "\n";
   arma::vec      S(nPcs);
   arma::mat      V(D, nPcs);
   arma::mat      Rx(nPcs, nPcs);
@@ -35,6 +36,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   yest = myMat;
   arma::field<arma::uvec> nomissidx(N,1);
   arma::field<arma::uvec> missidx(N,1);
+  arma::mat covEst(D ,D);
   
   if(nMissing > 0)
   {
@@ -61,6 +63,8 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
 
   mu  = arma::sum(myMat)/numberOfNonNAvaluesInEachCol.t();
   W   = U*arma::diagmat(arma::sqrt(S));
+  std::cout << W.n_rows <<  " " << W.n_cols <<"\n";
+  
   tau = 1/( trace(covy) - arma::accu(S) );    
   
   double taumax = 1e10;
@@ -77,7 +81,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   
   for(int i = 0; i < maxIterations; i++)
   {
-    std::cout << i << "\n";
+    //std::cout << i << "\n";
     
     Rx    = identity_nPcs + tau*W.t()*W + SigW;
     Rxinv = arma::inv(Rx);
@@ -117,9 +121,14 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
     }
   }
   
-
+  ss            = 1/tau;
+  covEst        = W*W.t() + (ss*arma::eye<arma::mat>(D,D));
+  std::cout << W.n_rows <<  " " << W.n_cols <<"\n";
+  
   List ret ;
-  ret["W"] = W;
+  ret["W"]      = W;
+  ret["ss"]     = 1/tau;
+  ret["C"]      = covEst;
   
   return(ret) ;
 }
