@@ -37,7 +37,6 @@ bpcapp <- function(myMat, nPcs=NA, seed=NA, threshold=1e-5, maxIterations=1000, 
     myMat[hidden] <- 0 
   } 
   
-  print(qDim)
   ppcaOutput <- bpcaNet(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, qDim, threshold, maxIterations=1000)
 
   res <- list()
