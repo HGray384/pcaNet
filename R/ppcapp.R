@@ -22,7 +22,7 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   ppcaOutput <- ppcaNet(myMat, N, D, C,  hidden, nMissing, nPcs, threshold, maxIterations=1000)
   
   res <- list()
-  res[["W"]]        <- ppcaOutput$C
+  res[["W"]]        <- ppcaOutput$W
   res[["sigmaSq"]]  <- ppcaOutput$ss
   res[["C"]]        <- ppcaOutput$C
   res[["method"]]   <- "ppcaNet"
