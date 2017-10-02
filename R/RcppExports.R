@@ -5,6 +5,10 @@ bpcaNet <- function(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissInd
     .Call('ppcaNet_bpcaNet', PACKAGE = 'ppcaNet', myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
 }
 
+mpcaNet <- function(Y, W, hidden, nMissing, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
+    .Call('ppcaNet_mpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
+}
+
 ppcaNet <- function(myMat, N, D, W, hidden, nMissing, nPcs = 2L, threshold = 1e-5, maxIterations = 1000L) {
     .Call('ppcaNet_ppcaNet', PACKAGE = 'ppcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
 }
