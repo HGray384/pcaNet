@@ -50,8 +50,8 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   mtilde.ones(); // initialised as in Ilin and Raiko code
   X.zeros();
   C.zeros();
-  vw=0.001*arma::ones(k,1); // initialised as in Ilin and Raiko code
-  vm=0.001; // initialised as in Ilin and Raiko code
+  vw=arma::ones(k,1); // initialised as in Ilin and Raiko code
+  vm=1; // initialised as in Ilin and Raiko code
   for (int j = 0; j < p; j++) {
     D.slice(j) = arma::eye(k,k); // each slice is Sigmaw for j-th observation
   }
@@ -118,16 +118,16 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   mbar = arma::sum(Y-WX,1);
   //std::cout << "mbar:old \n" << mbar << "\n";
   for (int j = 0; j < p; j++){
-  mbar(j) = (vm/(nObs(j)*(vm*(v/nObs(j)))))*mbar(j);   
+  mbar(j) = (vm/(nObs(j)*(vm+(v/nObs(j)))))*mbar(j);   
   }
-  //std::cout << "mbar:new \n" << mbar << "\n";
+  std::cout << "mbar:new \n" << mbar << "\n";
   
   // update mtilde
   //std::cout << "mtilde:old \n" << mtilde << "\n";
   for (int j = 0; j < p; j++){
-    mtilde(j) = ((v*vm)/(nObs(j)*(vm*(v/nObs(j)))));   
+    mtilde(j) = ((v*vm)/(nObs(j)*(vm+(v/nObs(j)))));   
   }
-  //std::cout << "mtilde:new \n" << mtilde << "\n";
+  std::cout << "mtilde:new \n" << mtilde << "\n";
   
   // update Sigmaw & W
   diagvwinv = arma::inv(arma::diagmat(vw));
@@ -150,6 +150,8 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     Wnew.row(j) = arma::trans(Sigmaw*ww);
     //std::cout << Wnew << "\n";
   }
+  std::cout << "Wnew: " << Wnew << "\n";
+  
   //std::cout << " update v" << "\n";
   
   //Update v
@@ -168,6 +170,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
   }
   vnew/=nObsTotal;
+  std::cout << "vnew: " << vnew << "\n";
   
   // update vw
   vwnew.zeros();
@@ -177,6 +180,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     }
     vwnew(l)/=p;
   }
+  std::cout << "vwnew: " << vwnew << "\n";
   
   // update vm
   vmnew = 0;
@@ -184,6 +188,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vmnew = vmnew + (mbar(j)*mbar(j))+mtilde(j);
   }
   vmnew/=p;
+  std::cout << "vmnew: " << vmnew << "\n";
   
   
   // compute costs for each parameter
