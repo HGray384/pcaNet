@@ -71,15 +71,15 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
   while(iter < MaxIter)
   {
     
-    
+    // PC updates
     diagv = v*arma::eye(k,k);
     for (int i = 0; i < n; i++) {
       y = Y.col(i);
       arma::uvec inds = arma::find(y!= 0);
       arma::mat w = W.rows(inds);
       Sigmax = arma::inv(diagv + (w.t()*w));
-      C.slice(i) = Sigmax;
-      X.col(i) = Sigmax*w.t()*(y(inds) - mu(inds));
+      C.slice(i) = Sigmax; // dropping factor of v for brevity
+      X.col(i) = Sigmax*w.t()*(y(inds) - mu(inds)); // dropping factor of 1/v for brevity
       //std::cout << inds << "\n";
     }
     /*
@@ -113,7 +113,7 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
       M  = Xcols*Xcols.t() + v*sumC;
       Yrow = Y.row(j);
       ww   = Xcols*(Yrow(indices) - mu(j));
-      Wnew.row(j) = (arma::solve(M,ww, arma::solve_opts::fast)).t();
+      Wnew.row(j) = (arma::solve(M,ww, arma::solve_opts::fast)).t(); // solves Wnew = inv(M)*ww
       //std::cout << Wnew << "\n";
     }
     

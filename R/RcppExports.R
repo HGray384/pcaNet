@@ -2,18 +2,22 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 bpcaNet <- function(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs = 2L, threshold = 1e-4, maxIterations = 200L) {
-    .Call('ppcaNet_bpcaNet', PACKAGE = 'ppcaNet', myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
+    .Call('_ppcaNet_bpcaNet', PACKAGE = 'ppcaNet', myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
 }
 
 mpcaNet <- function(Y, W, hidden, nMissing, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
-    .Call('ppcaNet_mpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
+    .Call('_ppcaNet_mpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
 }
 
 ppcaNet <- function(myMat, N, D, W, hidden, nMissing, nPcs = 2L, threshold = 1e-5, maxIterations = 1000L) {
-    .Call('ppcaNet_ppcaNet', PACKAGE = 'ppcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
+    .Call('_ppcaNet_ppcaNet', PACKAGE = 'ppcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
 }
 
 ppcaSensible <- function(Y, W, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
-    .Call('ppcaNet_ppcaSensible', PACKAGE = 'ppcaNet', Y, W, v, traceS, MaxIter, TolFun, TolX)
+    .Call('_ppcaNet_ppcaSensible', PACKAGE = 'ppcaNet', Y, W, v, traceS, MaxIter, TolFun, TolX)
+}
+
+vbpcaNet <- function(Y, W, hidden, nMissing, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
+    .Call('_ppcaNet_vbpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
 }
 

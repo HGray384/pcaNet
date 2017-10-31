@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // bpcaNet
 List bpcaNet(arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs, double threshold, int maxIterations);
-RcppExport SEXP ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+RcppExport SEXP _ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,7 @@ END_RCPP
 }
 // mpcaNet
 List mpcaNet(const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, double v, const double traceS, const int MaxIter, const double TolFun, const double TolX);
-RcppExport SEXP ppcaNet_mpcaNet(SEXP YSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
+RcppExport SEXP _ppcaNet_mpcaNet(SEXP YSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -48,7 +48,7 @@ END_RCPP
 }
 // ppcaNet
 List ppcaNet(arma::mat myMat, int N, int D, arma::mat W, arma::uvec hidden, int nMissing, int nPcs, double threshold, int maxIterations);
-RcppExport SEXP ppcaNet_ppcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+RcppExport SEXP _ppcaNet_ppcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -67,7 +67,7 @@ END_RCPP
 }
 // ppcaSensible
 List ppcaSensible(const arma::mat Y, arma::mat W, double v, const double traceS, const int MaxIter, const double TolFun, const double TolX);
-RcppExport SEXP ppcaNet_ppcaSensible(SEXP YSEXP, SEXP WSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
+RcppExport SEXP _ppcaNet_ppcaSensible(SEXP YSEXP, SEXP WSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -82,12 +82,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vbpcaNet
+List vbpcaNet(const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, double v, const double traceS, const int MaxIter, const double TolFun, const double TolX);
+RcppExport SEXP _ppcaNet_vbpcaNet(SEXP YSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type W(WSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type hidden(hiddenSEXP);
+    Rcpp::traits::input_parameter< int >::type nMissing(nMissingSEXP);
+    Rcpp::traits::input_parameter< double >::type v(vSEXP);
+    Rcpp::traits::input_parameter< const double >::type traceS(traceSSEXP);
+    Rcpp::traits::input_parameter< const int >::type MaxIter(MaxIterSEXP);
+    Rcpp::traits::input_parameter< const double >::type TolFun(TolFunSEXP);
+    Rcpp::traits::input_parameter< const double >::type TolX(TolXSEXP);
+    rcpp_result_gen = Rcpp::wrap(vbpcaNet(Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"ppcaNet_bpcaNet", (DL_FUNC) &ppcaNet_bpcaNet, 11},
-    {"ppcaNet_mpcaNet", (DL_FUNC) &ppcaNet_mpcaNet, 9},
-    {"ppcaNet_ppcaNet", (DL_FUNC) &ppcaNet_ppcaNet, 9},
-    {"ppcaNet_ppcaSensible", (DL_FUNC) &ppcaNet_ppcaSensible, 7},
+    {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 11},
+    {"_ppcaNet_mpcaNet", (DL_FUNC) &_ppcaNet_mpcaNet, 9},
+    {"_ppcaNet_ppcaNet", (DL_FUNC) &_ppcaNet_ppcaNet, 9},
+    {"_ppcaNet_ppcaSensible", (DL_FUNC) &_ppcaNet_ppcaSensible, 7},
+    {"_ppcaNet_vbpcaNet", (DL_FUNC) &_ppcaNet_vbpcaNet, 9},
     {NULL, NULL, 0}
 };
 
