@@ -157,7 +157,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     arma::mat tmpMat = Wred*C.slice(i)*Wred.t();
     for (int j = 0; j < p; j++) {
       arma::mat tmpMat2 = X.col(i).t()*D.slice(j)*X.col(i);
-      arma::mat tmpMat3 = C.slice(i)*D.slice(j);
+      arma::mat tmpMat3 = C.slice(i)*D.slice(j); // not sure if matrix product is what is wanted
       vnew = vnew + arma::accu(v*tmpMat2.diag() + v*v*arma::trace(tmpMat3));
     }
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
@@ -180,16 +180,43 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   }
   vmnew/=p;
   
-  nloglk_new = 0;
+  
+  // compute costs for each parameter
+  double cost_y;
+  double cost_m;
+  double cost_W;
+  double cost_X;
+  
+  // cost_y and cost_m are fast
+  cost_y = 0.5 * nObsTotal * (1 + log(2*arma::datum::pi*vnew) );
+  cost_m = 0.5 * p * log(vmnew) - 0.5 * arma::accu(arma::log(mtilde));
+  
+  // cost W
+  double wsquare = 0;
+  double TrSigmaw = 0;
+  double logDetSigmaw = 0;
+  wsquare = arma::dot(arma::sum(arma::square(Wnew)), arma::pow(vwnew, -1));
+  for(int j = 0; j < p; j++)
+  {
+    TrSigmaw += arma::dot(D.slice(j).diag(), arma::pow(vwnew, -1));
+    logDetSigmaw += log(arma::det(D.slice(j)));
+  }
+  cost_W = 0.5 * (wsquare + p * arma::accu(arma::log(vwnew)) - p*k + TrSigmaw - logDetSigmaw);
+  
+  
+  // cost X
+  double TrSigmax = 0;
+  double logDetSigmax = 0;
   for(int i = 0; i < n; i++)
   {
-  y = Y.col(i);
-  arma::uvec inds = arma::find(y!= 0);
-  arma::vec centred = y(inds) - mbar(inds);
-  arma::mat  Wred = Wnew.rows(inds);
-  arma::mat Cy = Wred*Wred.t() + vnew*arma::eye<arma::mat>(inds.n_elem,inds.n_elem);
-  nloglk_new += (inds.n_elem*log(2*arma::datum::pi) + log(arma::det(Cy)) + arma::trace(arma::solve(Cy,centred*centred.t(), arma::solve_opts::fast)  ))/2;
+    TrSigmax += arma::trace(C.slice(i));
+    logDetSigmax += log(arma::det(C.slice(i)));
   }
+  cost_X = 0.5 * (arma::accu(arma::pow(X, 2)) + TrSigmax - logDetSigmax - n*k);
+  
+  nloglk_new = cost_y + cost_m + cost_W + cost_X;
+  
+  
   //std::cout << nloglk_new << "\n";
   
   dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
