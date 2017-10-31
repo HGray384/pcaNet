@@ -24,7 +24,7 @@ vbpcapp <- function(Y, nPcs=2, MaxIter = 10000 ,TolFun = 1e-6,TolX = 1e-6) {
   #Y <- t(myMat)
   W        <- qr.Q(qr(matrix(rnorm(p*k), nrow = p, ncol = k))) # need orthonormal basis so covariances=0
   v        <- runif(1)
-  
+
   ppcaOutput  <- vbpcaNet(Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
   
   if(ppcaOutput$numIter == MaxIter)
