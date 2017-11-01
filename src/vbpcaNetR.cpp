@@ -120,14 +120,14 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   for (int j = 0; j < p; j++){
   mbar(j) = (vm/(nObs(j)*(vm+(v/nObs(j)))))*mbar(j);   
   }
-  std::cout << "mbar:new \n" << mbar << "\n";
+  //std::cout << "mbar:new \n" << mbar << "\n";
   
   // update mtilde
   //std::cout << "mtilde:old \n" << mtilde << "\n";
   for (int j = 0; j < p; j++){
     mtilde(j) = ((v*vm)/(nObs(j)*(vm+(v/nObs(j)))));   
   }
-  std::cout << "mtilde:new \n" << mtilde << "\n";
+  //std::cout << "mtilde:new \n" << mtilde << "\n";
   
   // update Sigmaw & W
   diagvwinv = arma::inv(arma::diagmat(vw));
@@ -150,7 +150,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     Wnew.row(j) = arma::trans(Sigmaw*ww);
     //std::cout << Wnew << "\n";
   }
-  std::cout << "Wnew: " << Wnew << "\n";
+  //std::cout << "Wnew: " << Wnew << "\n";
   
   //std::cout << " update v" << "\n";
   
@@ -170,7 +170,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
   }
   vnew/=nObsTotal;
-  std::cout << "vnew: " << vnew << "\n";
+  //std::cout << "vnew: " << vnew << "\n";
   
   // update vw
   vwnew.zeros();
@@ -180,7 +180,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     }
     vwnew(l)/=p;
   }
-  std::cout << "vwnew: " << vwnew << "\n";
+  //std::cout << "vwnew: " << vwnew << "\n";
   
   // update vm
   vmnew = 0;
@@ -188,7 +188,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vmnew = vmnew + (mbar(j)*mbar(j))+mtilde(j);
   }
   vmnew/=p;
-  std::cout << "vmnew: " << vmnew << "\n";
+  //std::cout << "vmnew: " << vmnew << "\n";
   
   
   // compute costs for each parameter
@@ -227,7 +227,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   nloglk_new = cost_y + cost_m + cost_W + cost_X;
   
   
-  std::cout << "new cost: " << nloglk_new << "\n";
+  //std::cout << "new cost: " << nloglk_new << "\n";
   
   dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
   std::cout << "dw: " << dw << "\n";
