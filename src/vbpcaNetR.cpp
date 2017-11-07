@@ -50,8 +50,8 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   mtilde.ones(); // initialised as in Ilin and Raiko code
   X.zeros();
   C.zeros();
-  vw=arma::ones(k,1); // initialised as in Ilin and Raiko code
-  vm=1; // initialised as in Ilin and Raiko code
+  vw=1000*arma::ones(k,1); // initialised as in Ilin and Raiko code
+  vm=1000; // initialised as in Ilin and Raiko code
   for (int j = 0; j < p; j++) {
     D.slice(j) = arma::eye(k,k); // each slice is Sigmaw for j-th observation
   }
@@ -81,7 +81,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   //std::cout << Y(hidden) << "\n";
   
   //std::cout << W << "\n";
-  int    iter = 0;;
+  int    iter = 0;
   
   
   while(iter < MaxIter)
@@ -199,19 +199,15 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   
   // cost_y and cost_m are fast
   cost_y = 0.5 * nObsTotal * (1 + log(2*arma::datum::pi*vnew) );
-  cost_m = 0.5 * p * log(vmnew) - 0.5 * arma::accu(arma::log(mtilde));
+  cost_m = 0.5 * (p * log(vmnew) - arma::accu(arma::log(mtilde)));
   
   // cost W
-  double wsquare = 0;
-  double TrSigmaw = 0;
   double logDetSigmaw = 0;
-  wsquare = arma::dot(arma::sum(arma::square(Wnew)), arma::pow(vwnew, -1));
   for(int j = 0; j < p; j++)
   {
-    TrSigmaw += arma::dot(D.slice(j).diag(), arma::pow(vwnew, -1));
     logDetSigmaw += log(arma::det(D.slice(j)));
   }
-  cost_W = 0.5 * (wsquare + p * arma::accu(arma::log(vwnew)) - p*k + TrSigmaw - logDetSigmaw);
+  cost_W = 0.5 * (p * arma::accu(arma::log(vwnew)) - logDetSigmaw);
   
   
   // cost X
@@ -249,6 +245,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   
   
   nloglk = nloglk_new;
+  iter+=1;
   }
   
   

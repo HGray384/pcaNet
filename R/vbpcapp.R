@@ -35,6 +35,7 @@ vbpcapp <- function(Y, nPcs=2, MaxIter = 10000 ,TolFun = 1e-6,TolX = 1e-6) {
   res[["W"]]        <- ppcaOutput$W
   res[["sigmaSq"]]  <- ppcaOutput$ss
   res[["C"]]        <- ppcaOutput$C
+  res[["numIter"]]  <- ppcaOutput$numIter
   res[["method"]]   <- "ppcaNet"
   return(res)
   
