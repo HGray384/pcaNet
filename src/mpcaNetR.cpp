@@ -159,6 +159,7 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
     
     
     nloglk = nloglk_new;
+    iter++;
   }
 
   
