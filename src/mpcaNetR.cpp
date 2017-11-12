@@ -24,7 +24,7 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
   arma::mat      M(k,k);
   arma::mat   sumC(k,k);
   arma::mat   Wnew(p,k);
-  
+  arma::mat  Cynew(p,p);
   arma::cube C(k,k,n);
   
   arma::uword currentIndex;
@@ -39,12 +39,13 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
   X.zeros();
   C.zeros();
   
-  double vnew, nObsTotal, nloglk, nloglk_new, dw;
+  double vnew, nObsTotal, nloglk, nloglk_new, dw, logDetCy, logDetCynew, traced;
   // Y  is p x n
   // Y' is n x p
   // W  is p x k
   
   nloglk = arma::datum::inf;
+  nloglk_new = nloglk;
   if(nMissing > 0)
   {
     hidden -= 1; // Since R indexing starts from 1, need to convert to C++ indexing
@@ -129,17 +130,47 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
     }
     vnew/=nObsTotal;
     
-    nloglk_new = 0;
-    for(int i = 0; i < n; i++)
+    if ( iter % 10 == 0 )
     {
-      y = Y.col(i);
-      arma::uvec inds = arma::find(y!= 0);
-      arma::vec centred = y(inds) - mu(inds);
-      arma::mat  Wred = Wnew.rows(inds);
-      arma::mat Cy = Wred*Wred.t() + vnew*arma::eye<arma::mat>(inds.n_elem,inds.n_elem);
-      nloglk_new += (inds.n_elem*log(2*arma::datum::pi) + log(arma::det(Cy)) + arma::trace(arma::solve(Cy,centred*centred.t(), arma::solve_opts::fast)  ))/2;
+      //std::cout << iter << "\n";
+      
+      nloglk_new = 0;
+      Cynew    = Wnew*Wnew.t() + vnew*arma::eye<arma::mat>(p,p);
+      logDetCynew = log(arma::det(Cynew));
+      arma::mat U  = arma::chol(Cynew);
+      arma::mat V  = arma::inv(U);
+      arma::mat VVt  = V*V.t();
+      
+      for(int i = 0; i < n; i++)
+      {
+        y = Y.col(i);
+        arma::uvec inds = arma::find(y!= 0);
+        arma::vec centred = y(inds) - mu(inds);
+        //std::cout << inds.n_elem << "\n";
+        if(inds.n_elem < p)
+        {
+          arma::mat  Wred = Wnew.rows(inds);
+          //std::cout << Wred.n_rows << Wred.n_cols << "\n";
+          
+          arma::mat Cy = Wred*Wred.t() + vnew*arma::eye<arma::mat>(inds.n_elem,inds.n_elem);
+          traced       = arma::trace(arma::solve(Cy,centred*centred.t(), arma::solve_opts::fast)  ); 
+          logDetCy     = log(arma::det(Cy));
+        }
+        else
+        {
+          traced       = arma::trace(VVt*centred*centred.t() );
+          logDetCy     = logDetCynew;
+        }
+        //  std::cout << Cy.n_rows << " " << Cy.n_cols << "\n";
+        // std::cout << "1:  " << arma::trace(V*V.t()*centred*centred.t() ) << "\n";
+        // std::cout << "2:  " <<  arma::trace(arma::solve(Cy,centred*centred.t(), arma::solve_opts::fast)  ) << "\n";
+        
+        nloglk_new += (inds.n_elem*log(2*arma::datum::pi) + logDetCy + traced)/2;
+      }
+      
     }
-    //std::cout << nloglk_new << "\n";
+    
+    //std::cout << (nloglk - nloglk_new) <<  " " << (nloglk) << " " << ( nloglk_new)  << "\n";
     
     dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
     //std::cout << dw << "\n";
@@ -154,14 +185,21 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
     }
     else if( (nloglk - nloglk_new) < TolFun )
     {
-      break;
+      if ( iter % 10 == 0 )
+      {
+        //std::cout << iter << " here " <<  (nloglk - nloglk_new) << "\n";
+        break;
+      }
     }
     
-    
-    nloglk = nloglk_new;
+    if ( iter % 10 == 0 )
+    {
+      
+      nloglk = nloglk_new;
+    }
     iter++;
   }
-
+  
   
   covEst        = Wnew*Wnew.t() + (v*arma::eye<arma::mat>(p,p));
   
