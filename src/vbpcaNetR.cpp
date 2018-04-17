@@ -226,7 +226,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   //std::cout << "new cost: " << nloglk_new << "\n";
   
   dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
-  std::cout << "dw: " << dw << "\n";
+  //std::cout << "dw: " << dw << "\n";
   
   W = Wnew;
   v = vnew;
