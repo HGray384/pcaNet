@@ -1,4 +1,4 @@
-vbpcapp <- function(Y, nPcs=2, MaxIter = 10000 ,TolFun = 1e-6,TolX = 1e-6) {
+vbpcapp <- function(Y, nPcs=2, MaxIter = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
   
   k        <- nPcs
   #Y        <- scale(Y, scale = F)
