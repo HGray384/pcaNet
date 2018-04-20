@@ -30,9 +30,11 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   R2cum <- rep(NA, nPcs)
   TSS   <- sum(myMat^2, na.rm = TRUE)
   for (i in 1:ncol(Worth)) {
-    difference <- myMat - (X[, 1:i, drop = FALSE] %*% t(C[, 1:i, drop = FALSE]))
+    difference <- myMat - (X[, 1:i, drop = FALSE] %*% t(Worth[, 1:i, drop = FALSE]))
     R2cum[i] <- 1 - (sum(difference^2, na.rm = TRUE)/TSS)
   }
+  
+  
   
   
   
