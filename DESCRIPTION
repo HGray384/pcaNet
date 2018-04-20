@@ -4,8 +4,13 @@ Title: What the package does (short line)
 Version: 1.0
 Date: 2017-03-28
 Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Maintainer: Who to complain to <paul.kirk@mrc-bsu.cam.ac.uk>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
-Imports: Rcpp (>= 0.12.9)
+Depends:
+    R (>= 3.3.0)
+biocViews:
+Imports:
+    Rcpp (>= 0.12.9),
+    pcaMethods
 LinkingTo: Rcpp, RcppArmadillo
