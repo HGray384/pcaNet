@@ -22,7 +22,7 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   ppcaOutput <- ppcaNet(myMat, N, D, C,  hidden, nMissing, nPcs, threshold, maxIterations=1000)
   
   Worth <- pcaMethods:::orth(ppcaOutput$W)
-  evs   <- eigen(cov(myMat %*% C))
+  evs   <- eigen(cov(myMat %*% Worth))
   vals  <- evs[[1]]
   vecs  <- evs[[2]]
   Worth <- Worth %*% vecs
