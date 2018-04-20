@@ -41,6 +41,7 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   res <- list()
   res[["W"]]        <- ppcaOutput$W
   res[["W_orth"]]   <- Worth
+  res[["evs"]]      <- evs
   res[["sigmaSq"]]  <- ppcaOutput$ss
   res[["C"]]        <- ppcaOutput$C
   res[["method"]]   <- "ppcaNet"
