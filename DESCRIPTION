@@ -8,6 +8,6 @@ Maintainer: Who to complain to <paul.kirk@mrc-bsu.cam.ac.uk>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Depends: R (>= 3.3.0)
-biocViews: Software, Visualization 
-Imports: Rcpp (>= 0.12.9), pcaMethods
+biocViews: pcaMethods 
+Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0)
 LinkingTo: Rcpp, RcppArmadillo
