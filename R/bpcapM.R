@@ -27,9 +27,6 @@
 #' @examples
 bpcapM <- function(myMat, nPcs=2, threshold=1e-4, maxIterations=100, ...) {
 
-  if (!is.na(seed)) 
-    set.seed(seed)
-  
   N <- nrow(myMat)
   D <- ncol(myMat)
   
