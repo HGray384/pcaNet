@@ -101,34 +101,23 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   Sigmax = arma::inv(diagv + (w.t()*w+v*sumD));
   C.slice(i) = Sigmax; // dropping a factor of v from Ilin and Raiko
   X.col(i) = Sigmax*w.t()*(y(inds) - mbar(inds));
-  //std::cout << inds << "\n";
   }
   
-  //arma::colvec c = arma::sum(Y-W*X,1);
-  //std::cout << Y << "\n";
-  //std::cout << W << "\n";
-  //std::cout << X << "\n";
-  //std::cout << c << "\n";
-  
+
   
   // Update mbar
   WX = W*X;
-  //std::cout << WX << "\n";
   WX.elem(arma::find(Y == 0)).zeros();
   mbar = arma::sum(Y-WX,1);
-  //std::cout << "mbar:old \n" << mbar << "\n";
   for (int j = 0; j < p; j++){
   mbar(j) = (vm/(nObs(j)*(vm+(v/nObs(j)))))*mbar(j);   
   }
-  //std::cout << "mbar:new \n" << mbar << "\n";
-  
+
   // update mtilde
-  //std::cout << "mtilde:old \n" << mtilde << "\n";
   for (int j = 0; j < p; j++){
     mtilde(j) = ((v*vm)/(nObs(j)*(vm+(v/nObs(j)))));   
   }
-  //std::cout << "mtilde:new \n" << mtilde << "\n";
-  
+
   // update Sigmaw & W
   diagvwinv = arma::inv(arma::diagmat(vw));
   for (int j = 0; j < p; j++) {
@@ -143,20 +132,14 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     M  = Xcols*Xcols.t() + v*sumC;
     Sigmaw = arma::inv(v*diagvwinv + M);
     D.slice(j) = Sigmaw; // dropping a factor of v from Ilin and Raiko
-    //std::cout << " sigmaw" << Sigmaw << "\n";
     // now Wnew
     Yrow = Y.row(j);
     ww   = Xcols*(Yrow(indices) - mbar(j));
     Wnew.row(j) = arma::trans(Sigmaw*ww);
-    //std::cout << Wnew << "\n";
   }
-  //std::cout << "Wnew: " << Wnew << "\n";
-  
-  //std::cout << " update v" << "\n";
-  
+
   //Update v
   vnew = 0;
-  //std::cout << v << "\n";
   for (int i = 0; i < n; i++) {
     y = Y.col(i);
     arma::uvec inds = arma::find(y!= 0);
@@ -170,8 +153,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
   }
   vnew/=nObsTotal;
-  //std::cout << "vnew: " << vnew << "\n";
-  
+
   // update vw
   vwnew.zeros();
   for(int l = 0; l < k; l++){
@@ -180,16 +162,14 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     }
     vwnew(l)/=p;
   }
-  //std::cout << "vwnew: " << vwnew << "\n";
-  
+
   // update vm
   vmnew = 0;
   for(int j = 0; j < p; j++){
     vmnew = vmnew + (mbar(j)*mbar(j))+mtilde(j);
   }
   vmnew/=p;
-  //std::cout << "vmnew: " << vmnew << "\n";
-  
+
   
   // compute costs for each parameter
   double cost_y;
@@ -222,12 +202,8 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   
   nloglk_new = cost_y + cost_m + cost_W + cost_X;
   
-  
-  //std::cout << "new cost: " << nloglk_new << "\n";
-  
   dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
-  //std::cout << "dw: " << dw << "\n";
-  
+
   W = Wnew;
   v = vnew;
   vw = vwnew;

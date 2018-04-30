@@ -1,7 +1,18 @@
-ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, ...) {
-  ## Set the seed to the user defined value. This affects the generation
-  ## of random values for the initial setup of the loading matrix
-  
+#' Title
+#'
+#' @param myMat 
+#' @param nPcs 
+#' @param seed 
+#' @param threshold 
+#' @param maxIterations 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, ...) {
+
   if (!is.na(seed)) 
     set.seed(seed)
   
@@ -21,6 +32,7 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   
   ppcaOutput <- ppcaNet(myMat, N, D, C,  hidden, nMissing, nPcs, threshold, maxIterations=1000)
   
+  # Additional processing from pcaMethods to orthonormalise:
   Worth <- pcaMethods:::orth(ppcaOutput$W)
   evs   <- eigen(cov(myMat %*% Worth))
   vals  <- evs[[1]]
@@ -35,16 +47,20 @@ ppcapp <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   }
   
   
+  # Prepare pcaMethods-style output:
+  pcaMethodsRes          <- new("pcaRes")
+  pcaMethodsRes@scores   <- X
+  pcaMethodsRes@loadings <- Worth
+  pcaMethodsRes@R2cum    <- R2cum
+  pcaMethodsRes@method   <- "ppca"
   
+  # Also return the standard ppcaNet output:
+  output <- list()
+  output[["W"]]              <- ppcaOutput$W
+  output[["sigmaSq"]]        <- ppcaOutput$ss
+  output[["Sigma"]]          <- ppcaOutput$C
+  output[["pcaMethodsRes"]]  <- pcaMethodsRes
   
-  
-  res <- list()
-  res[["W"]]        <- ppcaOutput$W
-  res[["W_orth"]]   <- Worth
-  res[["evs"]]      <- evs
-  res[["sigmaSq"]]  <- ppcaOutput$ss
-  res[["C"]]        <- ppcaOutput$C
-  res[["method"]]   <- "ppcaNet"
-  return(res)
+  return(output)
   
 }
