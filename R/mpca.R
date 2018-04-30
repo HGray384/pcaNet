@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-mpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-6,TolX = 1e-6) {
+mpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
 
   k        <- nPcs
   myMat    <- t(myMat)
