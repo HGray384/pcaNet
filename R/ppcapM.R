@@ -22,6 +22,9 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   hidden   <- which(is.na(myMat))
   nMissing <- length(hidden)
   
+  myMatsaved      <- myMat
+  
+  
   if(nMissing) { myMat[hidden] <- 0 } 
   
   ## ------- Initialization
@@ -40,9 +43,9 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   Worth <- Worth %*% vecs
   X     <- myMat %*% Worth
   R2cum <- rep(NA, nPcs)
-  TSS   <- sum(myMat^2, na.rm = TRUE)
+  TSS   <- sum(myMatsaved^2, na.rm = TRUE)
   for (i in 1:ncol(Worth)) {
-    difference <- myMat - (X[, 1:i, drop = FALSE] %*% t(Worth[, 1:i, drop = FALSE]))
+    difference <- myMatsaved - (X[, 1:i, drop = FALSE] %*% t(Worth[, 1:i, drop = FALSE]))
     R2cum[i] <- 1 - (sum(difference^2, na.rm = TRUE)/TSS)
   }
   
