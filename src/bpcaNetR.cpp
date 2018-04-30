@@ -109,7 +109,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
     xTranspose = x.t();
 
     scores.rows(nomissIndex) = xTranspose;
-    std::cout << scores(0,0) << "\n";
+    //std::cout << scores(0,0) << "\n";
 
     for(int j = 0; j < missIndex.n_elem; j++)
     {
@@ -163,8 +163,8 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   ss            = 1/tau;
   covEst        = W*W.t() + (ss*arma::eye<arma::mat>(D,D));
 
-  std::cout << scores(0,0) << " " << scores(0,1) << " " << scores(0,2) << "\n";
-  std::cout << scores(1,0) << " " << scores(1,1) << " " << scores(1,2) << "\n";
+  //std::cout << scores(0,0) << " " << scores(0,1) << " " << scores(0,2) << "\n";
+  //std::cout << scores(1,0) << " " << scores(1,1) << " " << scores(1,2) << "\n";
   
   List ret ;
   ret["W"]      = W;

@@ -55,8 +55,6 @@ bpcapM <- function(myMat, nPcs=2, threshold=1e-4, maxIterations=100, ...) {
     myMat[hidden] <- 0 
   } 
   
-  print(dim(myMat))
-  print(hidden)
   
   ppcaOutput <- bpcaNet(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, qDim, threshold, maxIterations=1000)
 
