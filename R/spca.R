@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-spcapp <- function (myMat, nPcs, maxIterations = 10000 ,TolFun = 1e-6,TolX = 1e-6)
+spca <- function (myMat, nPcs, maxIterations = 10000 ,TolFun = 1e-6,TolX = 1e-6)
 {
     k        <- nPcs
     myMat    <- scale(myMat, scale = F)

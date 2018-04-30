@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-vbpcapp <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
+vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
   
   k        <- nPcs
   myMat    <- t(myMat)
