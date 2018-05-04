@@ -88,6 +88,7 @@ List ppcaNet (arma::mat myMat, int N, int D, arma::mat W, arma::uvec hidden, int
   ret["W"]      = W;
   ret["ss"]     = ss;
   ret["C"]      = covEst;
+  ret["myMat"]  = myMat;
   
   // For us, we don't strictly need the below, because we are only interested in estimating the covariance matrix
   // Leave it in for now (but commented), in case we later decide to give this functionality to the user

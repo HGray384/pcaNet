@@ -35,6 +35,8 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   
   ppcaOutput <- ppcaNet(myMat, N, D, C,  hidden, nMissing, nPcs, threshold, maxIterations=1000)
   
+  myMat <- ppcaOutput$myMat;
+  
   # Additional processing from pcaMethods to orthonormalise:
   Worth <- pcaMethods:::orth(ppcaOutput$W)
   evs   <- eigen(cov(myMat %*% Worth))
@@ -43,9 +45,9 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-5, maxIterations=1000, .
   Worth <- Worth %*% vecs
   X     <- myMat %*% Worth
   R2cum <- rep(NA, nPcs)
-  TSS   <- sum(myMatsaved^2, na.rm = TRUE)
+  TSS   <- sum(myMat^2, na.rm = TRUE)
   for (i in 1:ncol(Worth)) {
-    difference <- myMatsaved - (X[, 1:i, drop = FALSE] %*% t(Worth[, 1:i, drop = FALSE]))
+    difference <- myMat - (X[, 1:i, drop = FALSE] %*% t(Worth[, 1:i, drop = FALSE]))
     R2cum[i] <- 1 - (sum(difference^2, na.rm = TRUE)/TSS)
   }
   
