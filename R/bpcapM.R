@@ -55,9 +55,8 @@ bpcapM <- function(myMat, nPcs=2, threshold=1e-4, maxIterations=100, ...) {
     myMat[hidden] <- 0 
   } 
   
-  
-  ppcaOutput <- bpcaNet(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, qDim, threshold, maxIterations=1000)
-
+  covmyMat   <- cov(myMat)
+  ppcaOutput <- bpcaNet(myMat, covmyMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, qDim, threshold, maxIterations=1000)
   
   R2cum      <- rep(NA, nPcs)
   TSS        <- sum(myMatsaved^2, na.rm=TRUE)

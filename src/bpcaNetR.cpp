@@ -4,7 +4,7 @@
 using namespace Rcpp ;
 
 // [[Rcpp::export()]]
-List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs=2, double threshold=1e-4, int maxIterations=200) {
+List bpcaNet (arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs=2, double threshold=1e-4, int maxIterations=200) {
   
   //double ss, ss_old, rel_ch, objective, TSS;
   
@@ -19,7 +19,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   arma::mat      proj(N, nPcs);
   arma::mat      yest(N, D);
   arma::mat      myMatNA = myMat;
-  arma::mat      covy(D, D);
+ // arma::mat      covy(D, D);
   arma::mat      U(D, nPcs);
   arma::mat      Ufull(D, D);
   arma::mat      Vfull(D, D);
@@ -60,7 +60,7 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   nomissIndex -= 1;
   missIndex   -= 1;
 
-  covy = arma::cov(yest);
+//  covy = arma::cov(yest);
   
   
   arma::svd(Ufull, Sfull, Vfull, covy);
