@@ -7,12 +7,13 @@
 using namespace Rcpp;
 
 // bpcaNet
-List bpcaNet(arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs, double threshold, int maxIterations);
-RcppExport SEXP _ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+List bpcaNet(arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs, double threshold, int maxIterations);
+RcppExport SEXP _ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP covySEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type myMat(myMatSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type covy(covySEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type D(DSEXP);
     Rcpp::traits::input_parameter< arma::uvec >::type hidden(hiddenSEXP);
@@ -23,7 +24,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nPcs(nPcsSEXP);
     Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
     Rcpp::traits::input_parameter< int >::type maxIterations(maxIterationsSEXP);
-    rcpp_result_gen = Rcpp::wrap(bpcaNet(myMat, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations));
+    rcpp_result_gen = Rcpp::wrap(bpcaNet(myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -103,7 +104,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 11},
+    {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 12},
     {"_ppcaNet_mpcaNet", (DL_FUNC) &_ppcaNet_mpcaNet, 9},
     {"_ppcaNet_ppcaNet", (DL_FUNC) &_ppcaNet_ppcaNet, 9},
     {"_ppcaNet_ppcaSensible", (DL_FUNC) &_ppcaNet_ppcaSensible, 7},
