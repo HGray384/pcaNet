@@ -9,10 +9,10 @@ List bpcaNet (arma::mat myMat, int N, int D, arma::uvec hidden, arma::uvec numbe
   //double ss, ss_old, rel_ch, objective, TSS;
   
   double tau, dtau, tauold, trS, ss;
-  int nNotMissing = N - nMissing;
+  int nNotMissing = nomissIndex.n_elem;
   int ind;
   
-  arma::mat      dy(nomissIndex.n_elem, D);
+  arma::mat      dy(nNotMissing, D);
   arma::mat      x(nPcs, nNotMissing);
   arma::mat      xTranspose(nNotMissing, nPcs);
   
