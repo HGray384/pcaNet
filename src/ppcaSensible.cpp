@@ -29,7 +29,8 @@ List ppcaSensible (const arma::mat Y, arma::mat W, double v, const double traceS
     arma::mat     M(k,k);
     arma::mat diagv(k,k);
     arma::mat    CC(p,p);
-    arma::mat   Xmu(k,n);
+    arma::mat    X(k, n);
+    //arma::mat   Xmu(k,n);
     
     double vnew, dw, dv, delta, nloglk_new, nloglk = arma::datum::inf, eps = arma::datum::eps, sqrteps = sqrt(eps), pi = arma::datum::pi;
     int    iter = 0;;
@@ -43,6 +44,8 @@ List ppcaSensible (const arma::mat Y, arma::mat W, double v, const double traceS
         
         SW    = Y*(Y.t())*W/(n-1); // Y'W
         M     = ((W.t())*W) + diagv;
+        X     = arma::inv(M)*(W.t()*Y);
+        
         Wnew  = mrdivider(SW, diagv + solve(M, W.t()*SW, arma::solve_opts::fast));
         vnew  = (traceS - trace(mrdivider(SW,M)*Wnew.t()))/p;
         
@@ -90,9 +93,9 @@ List ppcaSensible (const arma::mat Y, arma::mat W, double v, const double traceS
     List ret ;
     ret["W"]       = Wnew ;
     //ret["Xmu"]     = Xmu;
-    ret["ss"]       = vnew ;
-    ret["C"]      = covEst;
-    
+    ret["ss"]      = vnew ;
+    ret["C"]       = covEst;
+    ret["scores"]  = X.t();
     ret["numIter"] = iter ;
     /*
      ret["dw"]      = dw ;

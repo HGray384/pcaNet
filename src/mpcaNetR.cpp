@@ -208,6 +208,7 @@ List mpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, d
   ret["W"]       = Wnew ;
   ret["ss"]       = vnew ;
   ret["C"]      = covEst;
+  ret["scores"]  = X.t();
   ret["numIter"] = iter ;
   
   return(ret) ;

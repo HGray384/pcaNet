@@ -13,6 +13,7 @@
 vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
   
   k        <- nPcs
+  myMatsaved <- myMat
   myMat    <- t(myMat)
   p        <- nrow(myMat)
   n        <- ncol(myMat)
@@ -42,11 +43,28 @@ vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-
   {
     print('Maximum number of iterations reached')
   }
-  output <- list()
-  output[["W"]]        <- ppcaOutput$W
-  output[["sigmaSq"]]  <- ppcaOutput$ss
-  output[["Sigma"]]    <- ppcaOutput$C
-  output[["numIter"]]  <- ppcaOutput$numIter
-  return(output)
+  R2cum      <- rep(NA, nPcs)
+  TSS        <- sum(myMatsaved^2, na.rm = TRUE)
   
+  for (i in 1:nPcs) {
+    difference <- myMatsaved - (ppcaOutput$scores[,1:i, drop=FALSE] %*% t(ppcaOutput$W[,1:i, drop=FALSE]) )
+    R2cum[i]   <- 1 - (sum(difference^2, na.rm = TRUE) / TSS)
+  }
+  
+  pcaMethodsRes           <- new("pcaRes")
+  pcaMethodsRes@scores    <- ppcaOutput$scores 
+  pcaMethodsRes@loadings  <- ppcaOutput$W
+  pcaMethodsRes@R2cum     <- R2cum
+  pcaMethodsRes@method    <- "vbpca"
+  
+  # Return standard ppcaNet output:
+  
+  output <- list()
+  output[["W"]]              <- ppcaOutput$W
+  output[["sigmaSq"]]        <- ppcaOutput$ss
+  output[["Sigma"]]          <- ppcaOutput$C
+  output[["numIter"]]  <- ppcaOutput$numIter
+  output[["pcaMethodsRes"]]  <- pcaMethodsRes
+  
+  return(output)
 }

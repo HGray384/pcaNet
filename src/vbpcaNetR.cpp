@@ -232,6 +232,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   ret["W"]       = Wnew ;
   ret["ss"]       = vnew ;
   ret["C"]      = covEst;
+  ret["scores"] = X.t();
   ret["numIter"] = iter ;
   
   return(ret) ;
