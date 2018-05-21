@@ -177,18 +177,39 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   double cost_W;
   double cost_X;
   
-  // cost_y and cost_m are fast
-  cost_y = 0.5 * nObsTotal * (1 + log(2*arma::datum::pi*vnew) );
-  cost_m = 0.5 * (p * log(vmnew) - arma::accu(arma::log(mtilde)));
+  // cost_y and cost_m are fast MISTAKES WERE MADE
+  cost_y = 0.5 * nObsTotal * (1 + log(2*arma::datum::pi*vnew));
+  // double cost_y2 = 0; 
+  // cost_y2 =  arma::accu((Y-(X*Wnew+mbar))%(Y-(X*Wnew+mbar)));
+  // cost_y2 += n*sum(mtilde);
+  // for(int j = 0; j < p; j++){
+  //   cost_y2 = cost_y2 +  Wnew*D.slice(j)*Wnew.t();
+  // }
+  // for(int i = 0; i < n; i++)
+  // {
+  //   cost_y2 = cost_y2 + X.t()*C.slice(i)*X;
+  // }
+  // double cost_y3 = 0;
+  // for(int j = 0; j < p; j++)
+  // {
+  //   for(int i = 0; i < n; i++){
+  //     cost_y3 += arma::accu(D.slice(j)%C.slice(i));
+  //   }
+  // }
+  // cost_y2 *= 0.5 / vnew;
+  // cost_y += cost_y2 + cost_y3;
+  
+  //cost_m = 0.5 * (p * log(vmnew) - arma::accu(arma::log(mtilde)));
+  // updated
+  // cost m
+  cost_m = 0.5 / vmnew * (arma::accu(mtilde + mbar%mbar)) + 0.5 * (p * log(vmnew) - arma::accu(arma::log(mtilde))) - p/2;
   
   // cost W
-  double logDetSigmaw = 0;
+  cost_W = 0.5*sum(sum(Wnew%Wnew,0).t() / vwnew) + p/2*sum(arma::log(vwnew)) - p*k/2;
   for(int j = 0; j < p; j++)
   {
-    logDetSigmaw += log(arma::det(D.slice(j)));
+    cost_W += 0.5*sum( arma::diagvec(D.slice(j)) /vwnew ) - 0.5*log(arma::det(D.slice(j)));
   }
-  cost_W = 0.5 * (p * arma::accu(arma::log(vwnew)) - logDetSigmaw);
-  
   
   // cost X
   double TrSigmax = 0;
@@ -198,7 +219,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     TrSigmax += arma::trace(C.slice(i));
     logDetSigmax += log(arma::det(C.slice(i)));
   }
-  cost_X = 0.5 * (arma::accu(arma::pow(X, 2)) + TrSigmax - logDetSigmax - n*k);
+  cost_X = 0.5 * (arma::accu(X%X) + TrSigmax - logDetSigmax - n*k);
   
   nloglk_new = cost_y + cost_m + cost_W + cost_X;
   

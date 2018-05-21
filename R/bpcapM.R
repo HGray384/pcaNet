@@ -21,7 +21,13 @@
 #'   steps. 
 #' @param ... 
 #'
-#' @return
+#' @return {A list of 4 elements:
+#' \describe{
+#' \item{"W"}{the estimated loadings matrix.}
+#' \item{"sigmaSq"}{the estimated isotropic variance.}
+#' \item{"Sigma"}{the estimated covariance matrix.}
+#' \item{"pcaMethodsRes"}{a class of type "pcaRes" from pcaMethods}
+#' }}
 #' @export
 #'
 #' @examples
