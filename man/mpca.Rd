@@ -4,8 +4,8 @@
 \alias{mpca}
 \title{Title}
 \usage{
-mpca(myMat, nPcs = 2, maxIterations = 10000, TolFun = 1e-06,
-  TolX = 1e-06)
+mpca(myMat, nPcs = 2, maxIterations = 10000, TolFun = 1e-04,
+  TolX = 1e-04)
 }
 \arguments{
 \item{myMat}{}
