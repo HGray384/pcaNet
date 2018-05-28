@@ -147,7 +147,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     arma::mat tmpMat = Wred*C.slice(i)*Wred.t();
     for (int j = 0; j < p; j++) {
       arma::mat tmpMat2 = X.col(i).t()*D.slice(j)*X.col(i);
-      arma::mat tmpMat3 = C.slice(i)*D.slice(j); // not sure if matrix product is what is wanted
+      arma::mat tmpMat3 = C.slice(i)%D.slice(j); // not sure if matrix product is what is wanted
       vnew = vnew + arma::accu(v*tmpMat2.diag() + v*v*arma::trace(tmpMat3));
     }
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
