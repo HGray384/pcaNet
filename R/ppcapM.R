@@ -34,7 +34,7 @@
 #' \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
 #' \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
 #' \item{pcaMethodsRes}{\code{class} -- 
-#'   see \code{pcaRes}.}
+#'   see \code{\link[pcaRes-class]{pcaRes}}.}
 #' }}
 #' @export
 #'
@@ -72,7 +72,7 @@
 #' missFrac <- 0.1
 #' inds <- sample(x = 1:length(X),
 #'                size = ceiling(length(X)*missFrac),
-#'                replace = F)
+#'                replace = FALSE)
 #' 
 #' # replace them with NAs in the dataset
 #' missing.dataset <- X
