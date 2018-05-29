@@ -10,13 +10,17 @@
 #' @export
 #'
 #' @examples
-vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
+vbpca <- function(myMat, nPcs=NA, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-4) {
   
-  k        <- nPcs
-  myMatsaved <- myMat
-  myMat    <- t(myMat)
   p        <- nrow(myMat)
   n        <- ncol(myMat)
+  if(is.na(nPcs)){
+    nPcs <- n-1
+  }
+  k        <- nPcs
+  myMatsaved <- myMat
+
+
   
   traceS   <- sum(myMat^2)/(n-1)
   
@@ -36,7 +40,7 @@ vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-
   #myMat <- t(myMat)
   W        <- qr.Q(qr(matrix(rnorm(p*k), nrow = p, ncol = k))) # need orthonormal basis so covariances=0
   v        <- runif(1)
-
+  
   ppcaOutput  <- vbpcaNet(myMat, W, hidden, nMissing, v, traceS, maxIterations, TolFun, TolX)
   
   if(ppcaOutput$numIter == maxIterations)
@@ -47,7 +51,7 @@ vbpca <- function(myMat, nPcs=2, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e-
   TSS        <- sum(myMatsaved^2, na.rm = TRUE)
   
   for (i in 1:nPcs) {
-    difference <- myMatsaved - (ppcaOutput$scores[,1:i, drop=FALSE] %*% t(ppcaOutput$W[,1:i, drop=FALSE]) )
+    difference <- t(myMatsaved) - (ppcaOutput$scores[,1:i, drop=FALSE] %*% t(ppcaOutput$W[,1:i, drop=FALSE]) )
     R2cum[i]   <- 1 - (sum(difference^2, na.rm = TRUE) / TSS)
   }
   

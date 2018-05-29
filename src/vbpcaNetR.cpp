@@ -7,6 +7,7 @@ using namespace Rcpp ;
 // [[Rcpp::export()]]
 List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, double v, const double traceS, const int MaxIter = 1000, const double TolFun = 1e-6, const double TolX = 1e-6) {
   
+  // std::cout << "I get into initialisation" <<"\n";
   
   // inputs
   const int n = Y.n_cols;
@@ -52,10 +53,11 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   C.zeros();
   vw=1000*arma::ones(k,1); // initialised as in Ilin and Raiko code
   vm=1000; // initialised as in Ilin and Raiko code
+  // std::cout << "I get out of initialisation" <<"\n";
   for (int j = 0; j < p; j++) {
     D.slice(j) = arma::eye(k,k); // each slice is Sigmaw for j-th observation
   }
-  
+  // std::cout << "I get D done" <<"\n";
   // Y  is p x n
   // Y' is n x p
   // W  is p x k
@@ -65,14 +67,15 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   {
   hidden -= 1; // Since R indexing starts from 1, need to convert to C++ indexing
   }
-  
+  // std::cout << "I change the indexing" <<"\n";
   
   for (int j = 0; j < p; j++){
   arma::uvec indices = arma::find(Y.row(j)!=0);
   nObs(j) = indices.n_elem;   
   }
+  // std::cout << "I calculate nObs" <<"\n";
   nObsTotal = arma::accu(nObs);
-  //std::cout << nObs << "\n";
+  // std::cout << nObs << "\n";
   
   
   //std::cout << n << " " << k << "\n";
@@ -83,7 +86,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   //std::cout << W << "\n";
   int    iter = 0;
   
-  
+  // std::cout << "I begin the loop" <<"\n";
   while(iter < MaxIter)
   {
   
@@ -92,7 +95,9 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   for (int i = 0; i < n; i++) {
   y = Y.col(i);
   arma::uvec inds = arma::find(y!= 0);
+  // std::cout << "inds for Y.col(i)!=0 done " << inds << "\n";
   arma::mat w = W.rows(inds);
+  // std::cout << "w.row(inds) done" << w << "\n";
   sumD.zeros(); // from other
   for(int k = 0; k < inds.n_elem; k++){
     currentIndex = inds(k);
@@ -102,22 +107,24 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   C.slice(i) = Sigmax; // dropping a factor of v from Ilin and Raiko
   X.col(i) = Sigmax*w.t()*(y(inds) - mbar(inds));
   }
-  
+  // std::cout << "I update the PCs" << "\n";
 
   
   // Update mbar
+  // std::cout << "W has " << W.n_cols << " cols and " <<  W.n_rows << " rows" <<"\n";
+  // std::cout << "X has " << X.n_cols << " cols and " <<  X.n_rows << " rows" <<"\n";
   WX = W*X;
   WX.elem(arma::find(Y == 0)).zeros();
   mbar = arma::sum(Y-WX,1);
   for (int j = 0; j < p; j++){
   mbar(j) = (vm/(nObs(j)*(vm+(v/nObs(j)))))*mbar(j);   
   }
-
+  // std::cout << "I update mbar" << "\n";
   // update mtilde
   for (int j = 0; j < p; j++){
     mtilde(j) = ((v*vm)/(nObs(j)*(vm+(v/nObs(j)))));   
   }
-
+  // std::cout << "I update mtilde" << "\n";
   // update Sigmaw & W
   diagvwinv = arma::inv(arma::diagmat(vw));
   for (int j = 0; j < p; j++) {
@@ -137,7 +144,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     ww   = Xcols*(Yrow(indices) - mbar(j));
     Wnew.row(j) = arma::trans(Sigmaw*ww);
   }
-
+  // std::cout << "I update W and sigmaw" << "\n";
   //Update v
   vnew = 0;
   for (int i = 0; i < n; i++) {
@@ -153,7 +160,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     vnew = vnew + arma::accu(arma::square(y(inds) - Wred*X.col(i) - mbar(inds)) + mtilde(inds) + v*tmpMat.diag());
   }
   vnew/=nObsTotal;
-
+  // std::cout << "I update vy" << "\n";
   // update vw
   vwnew.zeros();
   for(int l = 0; l < k; l++){
@@ -162,14 +169,14 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
     }
     vwnew(l)/=p;
   }
-
+  // std::cout << "I update vw" << "\n";
   // update vm
   vmnew = 0;
   for(int j = 0; j < p; j++){
     vmnew = vmnew + (mbar(j)*mbar(j))+mtilde(j);
   }
   vmnew/=p;
-
+  // std::cout << "I update vm" << "\n";
   
   // compute costs for each parameter
   double cost_y;
@@ -222,7 +229,7 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   cost_X = 0.5 * (arma::accu(X%X) + TrSigmax - logDetSigmax - n*k);
   
   nloglk_new = cost_y + cost_m + cost_W + cost_X;
-  
+  // std::cout << "I compute costs" << "\n";
   dw = max(max(abs(W-Wnew) / (sqrt(arma::datum::eps)+max(max(abs(Wnew))))));
 
   W = Wnew;

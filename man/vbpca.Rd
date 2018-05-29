@@ -4,7 +4,7 @@
 \alias{vbpca}
 \title{Title}
 \usage{
-vbpca(myMat, nPcs = 2, maxIterations = 10000, TolFun = 1e-04,
+vbpca(myMat, nPcs = NA, maxIterations = 10000, TolFun = 1e-04,
   TolX = 1e-04)
 }
 \arguments{

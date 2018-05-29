@@ -115,7 +115,7 @@ opts <- list(init='random',
 p <- nrow(X)
 n <- ncol(X)
 if (is.na(ncomp)){
-  ncomp <- p-1
+  ncomp <- n-1
 }
 
 # if issparse(X)
