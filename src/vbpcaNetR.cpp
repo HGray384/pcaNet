@@ -247,7 +247,6 @@ List vbpcaNet (const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, 
   break;
   }
   
-  
   nloglk = nloglk_new;
   iter+=1;
   }

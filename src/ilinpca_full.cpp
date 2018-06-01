@@ -185,6 +185,7 @@ List pca_updates (arma::mat X,
     
     //% Update V
     arma::mat sXv(1, 1);
+    sXv.zeros();
     if (Isv.empty()){
       // std::cout << "I say that Isv is empty" << "\n";
       for (arma::uword r = 0; r<ndata; r++){
@@ -387,7 +388,6 @@ List pca_updates (arma::mat X,
     Aold = A;
     cost_old = cost;
     rms_old = rms;
-    sXv.zeros();
         // time = clock;
         // if etime(time,time_autosave) > opts.autosave
         //   time_autosave = time;

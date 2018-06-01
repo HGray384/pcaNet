@@ -15,7 +15,7 @@ vbpca <- function(myMat, nPcs=NA, maxIterations = 10000 ,TolFun = 1e-4,TolX = 1e
   p        <- nrow(myMat)
   n        <- ncol(myMat)
   if(is.na(nPcs)){
-    nPcs <- n-1
+    nPcs <- p-1
   }
   k        <- nPcs
   myMatsaved <- myMat
