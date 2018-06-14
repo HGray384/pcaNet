@@ -67,7 +67,8 @@ ndata   <- length(IX)
 rm(notmiss)
 
 # % Compute indices Isv: Sv{Isv(j)} gives Sv for j, j=1...n2
-nobscomb <- n
+# these arguments are used to save memory when many Sv{j} are the same
+nobscomb <- n # not currently used but might be in a future release
 Isv      <- c()
 obscombj <- c()
 # end
@@ -120,20 +121,20 @@ if (is.null(Mu)){
 
 
 
-
+# data centering
 X <- subtractMu(Mu, X, M, p, n, opts$bias) 
 ############################
+# compute initial rms
 ############################
-
 
 computedRMS <- compute_rms(X, A, S, M, ndata)
 errMx       <- computedRMS$errMx
 rms         <- computedRMS$rms
 
 ############################
+# initial hyperprior parameter values
 ############################
 
-# Parameters of the prior for variance parameters
 hpVa <- 0.001
 hpVb <- 0.001
 hpV  <- 0.001
@@ -158,10 +159,8 @@ ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv,
          maxiters = 1000, verbose = verbose)
 
 #########################
-
-
-  
-  
+# manage output
+#########################
 
 nPcs <- ncomp
 if(ppcaOutput$numIter == opts$maxiters)
@@ -171,11 +170,22 @@ if(ppcaOutput$numIter == opts$maxiters)
 R2cum      <- rep(NA, nPcs)
 TSS        <- sum(myMatsaved^2, na.rm = TRUE)
 
+# usually compute the above variables but currently
+# deciding whether to exclude shrunk dimensions
+
 pcaMethodsRes           <- new("pcaRes")
 pcaMethodsRes@scores    <- ppcaOutput$scores 
 pcaMethodsRes@loadings  <- ppcaOutput$W
 pcaMethodsRes@R2cum     <- rep(1, ncomp)
-pcaMethodsRes@method    <- "vbpca"
+pcaMethodsRes@method    <- algorithm
+
+# create hinton diagram
+if(verbose){
+plotrix::color2D.matplot(ppcaOutput$W,
+                                  extremes=c("black","white"),
+                                  main="Hinton diagram (white +, black -)",
+                                  Hinton=TRUE)
+}
 
 # Return standard ppcaNet output:
 

@@ -89,7 +89,8 @@
 #' 
 #' # covariance estimation
 #' norm(bp$Sigma-Sigma, type="F")^2/(length(X))
-bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100, ...) {
+bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100,
+                   verbose=TRUE, ...) {
 
   N <- nrow(myMat)
   D <- ncol(myMat)
@@ -137,6 +138,13 @@ bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100, ...) {
   pcaMethodsRes@R2cum     <- R2cum
   pcaMethodsRes@method    <- "bpca"
   
+  # create hinton diagram
+  if(verbose){
+    plotrix::color2D.matplot(ppcaOutput$W,
+                             extremes=c("black","white"),
+                             main="Hinton diagram (white +, black -)",
+                             Hinton=TRUE)
+  }
   
   # Return standard ppcaNet output:
   

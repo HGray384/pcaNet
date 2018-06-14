@@ -91,7 +91,8 @@
 #' 
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
-ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000, ...) {
+ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
+                   verbose=TRUE, ...) {
 
   if (!is.na(seed)) 
     set.seed(seed)
@@ -138,6 +139,14 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000, .
   pcaMethodsRes@loadings <- Worth
   pcaMethodsRes@R2cum    <- R2cum
   pcaMethodsRes@method   <- "ppca"
+  
+  # create hinton diagram
+  if(verbose){
+    plotrix::color2D.matplot(ppcaOutput$W,
+                             extremes=c("black","white"),
+                             main="Hinton diagram (white +, black -)",
+                             Hinton=TRUE)
+  }
   
   # Also return the standard ppcaNet output:
   output <- list()

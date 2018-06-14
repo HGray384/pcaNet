@@ -10,6 +10,6 @@ Description: Various implementations of algorithms for probabilistic PCA,
 License: gpl (>= 2) | COPYING
 Depends: R (>= 3.3.0)
 biocViews: pcaMethods 
-Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), corpcor, GeneNet
+Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), corpcor, GeneNet, plotrix
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1

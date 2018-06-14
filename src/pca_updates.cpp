@@ -506,7 +506,9 @@ List pca_updates (arma::mat X,
       cost2 = lccost(iter);
       if(fabs(cost2-cost1) < 1e-4)
       {
-        std::cout << "Stop: Cost has not changed much for 100 iterations.";
+        if (verbose){
+          std::cout << "Stop: Cost has not changed much for 100 iterations.";
+        }
         break;
       }
       
