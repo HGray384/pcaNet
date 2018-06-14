@@ -28,7 +28,8 @@ List pca_updates (arma::mat X,
                   const int niter_broadprior =100,
                   const int use_prior = 1,
                   const int use_postvar = 1,
-                  const int maxiters = 1000) {
+                  const int maxiters = 1000,
+                  const int verbose = 1) {
   // housekeeping
   const int n = X.n_cols;
   const int p = X.n_rows;
@@ -393,8 +394,9 @@ List pca_updates (arma::mat X,
     // std::cout << "cost_s done" << "\n";
     cost = cost_mu + cost_a + cost_x + cost_s;
     lccost(iter) = cost;
+    if (verbose){
     std::cout << "Step: " << iter << ", Cost: " << cost << ", RMS: "<< rms <<"\n";
-    
+    }
     ////////////////////////////
     
     // arma::mat U1;
@@ -493,7 +495,9 @@ List pca_updates (arma::mat X,
       rms2 = lcrms(iter);
       if(fabs(rms2-rms1) < 1e-4)
       {
-        std::cout << "Stop: RMS has not changed much for 100 iterations.";
+        if (verbose){
+          std::cout << "Stop: RMS has not changed much for 100 iterations.";
+        }
         break;
       }
       

@@ -1,6 +1,6 @@
-pca_full <- function(X, ncomp=NA, algorithm = "vb"){
+pca_full <- function(X, ncomp=NA, algorithm = "vb", verbose=TRUE){
 # comment this out before running
-set.seed(20)
+# set.seed(20)
 # X <- missing.dataset
 # X <- matrix(rnorm(20000), 100, 200)
 # X[1, 2] <- NaN
@@ -76,14 +76,14 @@ obscombj <- c()
 ####################################
 # parameter initialisation
 
-initialisedParms <- initParms(p, ncomp)
+initialisedParms <- initParms(p, n, ncomp)
 A   <- initialisedParms$A
 S   <- initialisedParms$S
 Mu  <- initialisedParms$Mu
 V   <- initialisedParms$V
 Av  <- initialisedParms$Av
 Sv  <- initialisedParms$Sv
-Muv <- initialisedParms$ Muv
+Muv <- initialisedParms$Muv
 # 
 # write.table( A, file = "A.csv", row.names = F, col.names = F, sep = ",")
 # write.table( S, file = "S.csv", row.names = F, col.names = F, sep = ",")
@@ -138,18 +138,24 @@ hpVa <- 0.001
 hpVb <- 0.001
 hpV  <- 0.001
 
-
-
 #########################
 # CALL C++ FUNCTION
 #########################
 if (is.null(Isv)){Isv <- rep(0, 2)}
 IX <- IX -1 # C++ indexing
 JX <- JX -1 # C++ indexing
-ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, Mu = Mu, Muv = Muv, Vmu = Vmu,
-         hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i, Isv = Isv,
-         M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, bias = opts$bias,
-         niter_broadprior = opts$niter_broadprior, use_prior = use_prior, use_postvar = use_postvar, maxiters = 1000)
+if(verbose){
+  verbose <- 1 # C++ true
+} else {
+  verbose <- 0 # C++ false
+}
+ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
+                          Mu = Mu, Muv = Muv, Vmu = Vmu,
+         hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i,
+         Isv = Isv, M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, 
+         bias = opts$bias, niter_broadprior = opts$niter_broadprior, 
+         use_prior = use_prior, use_postvar = use_postvar,
+         maxiters = 1000, verbose = verbose)
 
 #########################
 
@@ -187,7 +193,7 @@ return(output)
 
 # Initialise model parameters:
 # ============================
-initParms <- function(p, ncomp)
+initParms <- function(p, n, ncomp)
 {
   randNumMatrix <- matrix(rnorm(p*ncomp), nrow = p, ncol = ncomp) 
   qrDecomp      <- qr(randNumMatrix)

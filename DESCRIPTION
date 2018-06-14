@@ -6,10 +6,10 @@ Date: 2017-03-28
 Author: Paul DW Kirk and Harry Gray
 Maintainer: <paul.kirk@mrc-bsu.cam.ac.uk> <harry.gray@mrc-bsu.cam.ac.uk>
 Description: Various implementations of algorithms for probabilistic PCA, 
-  with an emphasis on covariance matrix estimation.
-License: gpl-3.0
+  with an emphasis on covariance matrix estimation and network reconstruction.
+License: gpl (>= 2) | COPYING
 Depends: R (>= 3.3.0)
 biocViews: pcaMethods 
-Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0)
+Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), corpcor, GeneNet
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
