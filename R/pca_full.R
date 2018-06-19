@@ -1,4 +1,4 @@
-pca_full <- function(X, ncomp=NA, algorithm = "vb", verbose=TRUE){
+pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000, verbose=TRUE){
 # comment this out before running
 # set.seed(20)
 # X <- missing.dataset
@@ -156,7 +156,7 @@ ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv,
          Isv = Isv, M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, 
          bias = opts$bias, niter_broadprior = opts$niter_broadprior, 
          use_prior = use_prior, use_postvar = use_postvar,
-         maxiters = 1000, verbose = verbose)
+         maxiters = maxiters, verbose = verbose)
 
 #########################
 # manage output

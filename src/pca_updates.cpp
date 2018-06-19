@@ -395,7 +395,7 @@ List pca_updates (arma::mat X,
     cost = cost_mu + cost_a + cost_x + cost_s;
     lccost(iter) = cost;
     if (verbose){
-    std::cout << "Step: " << iter << ", Cost: " << cost << ", RMS: "<< rms <<"\n";
+      std::cout << "Step: " << iter << ", Cost: " << cost << ", RMS: "<< rms <<"\n";
     }
     ////////////////////////////
     
@@ -563,6 +563,7 @@ List pca_updates (arma::mat X,
   //   if n2 < n2x
   //     [ S, Sv, Isv ] = addmcols( S, Sv, Ic, n2x, Isv );
   //   end
+
   
   // A.S = S;
   // A.Mu = Mu;
@@ -574,7 +575,25 @@ List pca_updates (arma::mat X,
   // A.Isv = Isv;
   // A.Muv = Muv;
   // A.lc = lc;
+  // covariance matrix
   arma::mat C = A*A.t() + V*arma::eye(p, p);
+  
+  // double detTerm=0;
+  // double distTerm=0;
+  // double normTerm=0;
+  // double val3=0;
+  // double sign3=0;
+  // double logLikeObs=0;
+  // double logLikeproj=0;
+  // // calculate log likelihood
+  // for (int i=0; i<n; i++){
+  //   
+  //   if ()
+  //   arma::mat truncC;
+  //   arma::log_det(val3, sign3, truncC);
+  //   detTerm += val3*sign3;
+  // }
+  
   // returns
   List ret;
   ret["scores"] = S.t();
