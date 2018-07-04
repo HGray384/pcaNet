@@ -67,6 +67,11 @@ List pca_updates (arma::mat X,
     Av.clear();
   }
   
+  if (bias == 0)
+  {
+    Muv.clear();
+  }
+  
   for (int iter = 1; iter < maxiters; iter++) {
     // std::cout << "Iteration: " << iter << "\n";
     nIter = iter;
@@ -395,7 +400,7 @@ List pca_updates (arma::mat X,
     cost = cost_mu + cost_a + cost_x + cost_s;
     lccost(iter) = cost;
     if (verbose){
-      std::cout << "Step: " << iter << ", Cost: " << cost << ", RMS: "<< rms <<"\n";
+      Rcout << "Step: " << iter << ", Cost: " << cost << ", RMS: "<< rms << std::endl;
     }
     ////////////////////////////
     
@@ -496,7 +501,7 @@ List pca_updates (arma::mat X,
       if(fabs(rms2-rms1) < 1e-4)
       {
         if (verbose){
-          std::cout << "Stop: RMS has not changed much for 100 iterations.";
+          Rcout << "Stop: RMS has not changed much for 100 iterations." << std::endl;
         }
         break;
       }
@@ -507,7 +512,7 @@ List pca_updates (arma::mat X,
       if(fabs(cost2-cost1) < 1e-4)
       {
         if (verbose){
-          std::cout << "Stop: Cost has not changed much for 100 iterations.";
+          Rcout << "Stop: Cost has not changed much for 100 iterations." << std::endl;
         }
         break;
       }
@@ -597,7 +602,7 @@ List pca_updates (arma::mat X,
   // returns
   List ret;
   ret["scores"] = S.t();
-  // ret["m"] = Mu;
+  ret["m"] = Mu;
   // ret["vm"] = Vmu;
   ret["ss"] = V;
   ret["W"] = A;

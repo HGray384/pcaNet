@@ -28,25 +28,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// mpcaNet
-List mpcaNet(const arma::mat Y, arma::mat W, arma::uvec hidden, int nMissing, double v, const double traceS, const int MaxIter, const double TolFun, const double TolX);
-RcppExport SEXP _ppcaNet_mpcaNet(SEXP YSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type W(WSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type hidden(hiddenSEXP);
-    Rcpp::traits::input_parameter< int >::type nMissing(nMissingSEXP);
-    Rcpp::traits::input_parameter< double >::type v(vSEXP);
-    Rcpp::traits::input_parameter< const double >::type traceS(traceSSEXP);
-    Rcpp::traits::input_parameter< const int >::type MaxIter(MaxIterSEXP);
-    Rcpp::traits::input_parameter< const double >::type TolFun(TolFunSEXP);
-    Rcpp::traits::input_parameter< const double >::type TolX(TolXSEXP);
-    rcpp_result_gen = Rcpp::wrap(mpcaNet(Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX));
-    return rcpp_result_gen;
-END_RCPP
-}
 // pca_updates
 List pca_updates(arma::mat X, double V, arma::mat A, arma::cube Av, arma::vec Va, arma::mat S, arma::cube Sv, arma::vec Mu, arma::vec Muv, double Vmu, const double hpVa, const double hpVb, const double hpV, const int ndata, const arma::vec Nobs_i, arma::vec Isv, arma::mat M, const arma::uvec IX, const arma::uvec JX, double rms, arma::mat errMx, const int bias, const int niter_broadprior, const int use_prior, const int use_postvar, const int maxiters, const int verbose);
 RcppExport SEXP _ppcaNet_pca_updates(SEXP XSEXP, SEXP VSEXP, SEXP ASEXP, SEXP AvSEXP, SEXP VaSEXP, SEXP SSEXP, SEXP SvSEXP, SEXP MuSEXP, SEXP MuvSEXP, SEXP VmuSEXP, SEXP hpVaSEXP, SEXP hpVbSEXP, SEXP hpVSEXP, SEXP ndataSEXP, SEXP Nobs_iSEXP, SEXP IsvSEXP, SEXP MSEXP, SEXP IXSEXP, SEXP JXSEXP, SEXP rmsSEXP, SEXP errMxSEXP, SEXP biasSEXP, SEXP niter_broadpriorSEXP, SEXP use_priorSEXP, SEXP use_postvarSEXP, SEXP maxitersSEXP, SEXP verboseSEXP) {
@@ -103,30 +84,11 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// ppcaSensible
-List ppcaSensible(const arma::mat Y, arma::mat W, double v, const double traceS, const int MaxIter, const double TolFun, const double TolX);
-RcppExport SEXP _ppcaNet_ppcaSensible(SEXP YSEXP, SEXP WSEXP, SEXP vSEXP, SEXP traceSSEXP, SEXP MaxIterSEXP, SEXP TolFunSEXP, SEXP TolXSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type W(WSEXP);
-    Rcpp::traits::input_parameter< double >::type v(vSEXP);
-    Rcpp::traits::input_parameter< const double >::type traceS(traceSSEXP);
-    Rcpp::traits::input_parameter< const int >::type MaxIter(MaxIterSEXP);
-    Rcpp::traits::input_parameter< const double >::type TolFun(TolFunSEXP);
-    Rcpp::traits::input_parameter< const double >::type TolX(TolXSEXP);
-    rcpp_result_gen = Rcpp::wrap(ppcaSensible(Y, W, v, traceS, MaxIter, TolFun, TolX));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 12},
-    {"_ppcaNet_mpcaNet", (DL_FUNC) &_ppcaNet_mpcaNet, 9},
     {"_ppcaNet_pca_updates", (DL_FUNC) &_ppcaNet_pca_updates, 27},
     {"_ppcaNet_ppcaNet", (DL_FUNC) &_ppcaNet_ppcaNet, 9},
-    {"_ppcaNet_ppcaSensible", (DL_FUNC) &_ppcaNet_ppcaSensible, 7},
     {NULL, NULL, 0}
 };
 

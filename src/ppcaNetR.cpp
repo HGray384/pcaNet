@@ -84,16 +84,6 @@ List ppcaNet (arma::mat myMat, int N, int D, arma::mat W, arma::uvec hidden, int
   
   covEst        = W*W.t() + (ss*arma::eye<arma::mat>(D,D));
   
-  // //log-likelihood
-  // double logLikeObs=0;
-  // double logLikeProj=0;
-  // for (int i=0; i<N; i++){
-  //   // calculate the log-likelihood for the observed data
-  //   myMat.row(i);
-  //   
-  //   // calculate the log-likelihood for the projected
-  //   
-  // }
   
   List ret ;
   ret["W"]      = W;

@@ -171,6 +171,7 @@ List bpcaNet (arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, 
   ret["ss"]     = 1/tau;
   ret["C"]      = covEst;
   ret["scores"] = scores;
+  ret["mu"] = mu;
   
   return(ret) ;
 }
