@@ -29,8 +29,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // pca_updates
-List pca_updates(arma::mat X, double V, arma::mat A, arma::cube Av, arma::vec Va, arma::mat S, arma::cube Sv, arma::vec Mu, arma::vec Muv, double Vmu, const double hpVa, const double hpVb, const double hpV, const int ndata, const arma::vec Nobs_i, arma::vec Isv, arma::mat M, const arma::uvec IX, const arma::uvec JX, double rms, arma::mat errMx, const int bias, const int niter_broadprior, const int use_prior, const int use_postvar, const int maxiters, const int verbose);
-RcppExport SEXP _ppcaNet_pca_updates(SEXP XSEXP, SEXP VSEXP, SEXP ASEXP, SEXP AvSEXP, SEXP VaSEXP, SEXP SSEXP, SEXP SvSEXP, SEXP MuSEXP, SEXP MuvSEXP, SEXP VmuSEXP, SEXP hpVaSEXP, SEXP hpVbSEXP, SEXP hpVSEXP, SEXP ndataSEXP, SEXP Nobs_iSEXP, SEXP IsvSEXP, SEXP MSEXP, SEXP IXSEXP, SEXP JXSEXP, SEXP rmsSEXP, SEXP errMxSEXP, SEXP biasSEXP, SEXP niter_broadpriorSEXP, SEXP use_priorSEXP, SEXP use_postvarSEXP, SEXP maxitersSEXP, SEXP verboseSEXP) {
+List pca_updates(arma::mat X, double V, arma::mat A, arma::cube Av, arma::vec Va, arma::mat S, arma::cube Sv, arma::vec Mu, arma::vec Muv, double Vmu, const double hpVa, const double hpVb, const double hpV, const int ndata, const arma::vec Nobs_i, arma::vec Isv, arma::mat M, const arma::uvec IX, const arma::uvec JX, double rms, arma::mat errMx, const int bias, const int rotate2pca, const int niter_broadprior, const int use_prior, const int use_postvar, const int maxiters, const int verbose);
+RcppExport SEXP _ppcaNet_pca_updates(SEXP XSEXP, SEXP VSEXP, SEXP ASEXP, SEXP AvSEXP, SEXP VaSEXP, SEXP SSEXP, SEXP SvSEXP, SEXP MuSEXP, SEXP MuvSEXP, SEXP VmuSEXP, SEXP hpVaSEXP, SEXP hpVbSEXP, SEXP hpVSEXP, SEXP ndataSEXP, SEXP Nobs_iSEXP, SEXP IsvSEXP, SEXP MSEXP, SEXP IXSEXP, SEXP JXSEXP, SEXP rmsSEXP, SEXP errMxSEXP, SEXP biasSEXP, SEXP rotate2pcaSEXP, SEXP niter_broadpriorSEXP, SEXP use_priorSEXP, SEXP use_postvarSEXP, SEXP maxitersSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -56,12 +56,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type rms(rmsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type errMx(errMxSEXP);
     Rcpp::traits::input_parameter< const int >::type bias(biasSEXP);
+    Rcpp::traits::input_parameter< const int >::type rotate2pca(rotate2pcaSEXP);
     Rcpp::traits::input_parameter< const int >::type niter_broadprior(niter_broadpriorSEXP);
     Rcpp::traits::input_parameter< const int >::type use_prior(use_priorSEXP);
     Rcpp::traits::input_parameter< const int >::type use_postvar(use_postvarSEXP);
     Rcpp::traits::input_parameter< const int >::type maxiters(maxitersSEXP);
     Rcpp::traits::input_parameter< const int >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(pca_updates(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, niter_broadprior, use_prior, use_postvar, maxiters, verbose));
+    rcpp_result_gen = Rcpp::wrap(pca_updates(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, rotate2pca, niter_broadprior, use_prior, use_postvar, maxiters, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -87,7 +88,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 12},
-    {"_ppcaNet_pca_updates", (DL_FUNC) &_ppcaNet_pca_updates, 27},
+    {"_ppcaNet_pca_updates", (DL_FUNC) &_ppcaNet_pca_updates, 28},
     {"_ppcaNet_ppcaNet", (DL_FUNC) &_ppcaNet_ppcaNet, 9},
     {NULL, NULL, 0}
 };

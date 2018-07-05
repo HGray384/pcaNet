@@ -25,6 +25,7 @@ List pca_updates (arma::mat X,
                   double rms,
                   arma::mat errMx,
                   const int bias = 1,
+                  const int rotate2pca = 1,
                   const int niter_broadprior =100,
                   const int use_prior = 1,
                   const int use_postvar = 1,
@@ -552,15 +553,120 @@ List pca_updates (arma::mat X,
     // std::cout << "Mu " <<  << "\n";
   }
   // % Finally rotate to the PCA solution
-  // if ~opts.rotate2pca
-  //   [ dMu, A, Av, S, Sv ] = RotateToPCA( ...
-  //     A, Av, S, Sv, Isv, obscombj, opts.bias );
-  if (bias){ 
-    Mu = Mu + dMu;
+  if (rotate2pca){
+    //   [ dMu, A, Av, S, Sv ] = RotateToPCA( ...
+    //     A, Av, S, Sv, Isv, obscombj, opts.bias );
+    if (verbose){
+      Rcout << "rotating to PCA basis..." << std::endl;
+    }
+    if (bias){
+    //   mS = mean(S,2);
+    // Rcout << "subtracting mean of S" << std::endl;
+    arma::vec mS = mean(S, 1);
+    // dMu = A*mS;
+    dMu = A*mS;
+    // S = S - repmat(mS,1,n2);
+    S -= repmat(mS, 1, n);
+    // Rcout << "mean subtracted" << std::endl;
+    // else
+    }
+    //   dMu = 0;
+    // end
+    //   
+    //   covS = S*S';
+    arma::mat covS = arma::cov(S.t(), 1);
+    // if isempty(Isv)
+    if (Isv.empty()){
+      // Rcout << "adding Sv to covS" << std::endl;
+      //   for j = 1:n2
+      for (int j = 0; j<n; j++){
+        //     covS = covS + Sv{j};
+        covS += Sv.slice(j);
+        // end
+      }
+    }
+    //   else
+    //     nobscomb = length(obscombj);
+    //   for j = 1:nobscomb
+    //     covS = covS + ( length(obscombj{j})*Sv{j} );
+    //   end
+    //     end
+    //     
+    //     covS = covS / n2;
+    //   %covS = covS / (n2-n1);
+    //   [VS,D] = eig(covS);
+    // Rcout << "computing eigenvalue decomposition of covS" << std::endl;
+    arma::mat VS;
+    arma::vec eigvals;
+    eig_sym(eigvals, VS, covS);
+    arma::mat D = diagmat(eigvals);
+    //   RA = VS*sqrt(D);
+    arma::mat RA = VS*sqrt(D);
+    //   A = A*RA;
+    A = A*RA;
+    //   covA = A'*A;
+    arma::mat covA = cov(A, 1);
+    //   if ~isempty(Av)
+    if (!Av.empty()){
+      // Rcout << "adding Av to covA" << std::endl;
+      //     for i = 1:n1
+      for (int i = 0; i<p ; i++){
+        //       Av{i} = RA'*Av{i}*RA;
+        Av.slice(i) = RA.t()*Av.slice(i)*RA;
+        //   covA = covA + Av{i};
+        covA += Av.slice(i);
+        //   end
+      }
+      //     end
+    }
+    //     covA = covA / n1;
+    //   [VA,DA] = eig(covA);
+    // Rcout << "computing eigen decomp of covA" << std::endl;
+    arma::mat VA;
+    arma::vec eigvalsA;
+    eig_sym(eigvalsA, VA, covA);
+    arma::mat DA = diagmat(eigvalsA);
+    // I don't think the below 3 lines need to be translated
+    // this is because c++ returns the eigenvalues already sorted
+    // by largest to smallest
+    //   [DA,I] = sort( -diag(DA) );
+    //   DA = -DA;
+    //   VA = VA(:,I);
+    //   A = A*VA;
+    A = A*VA;
+    //   
+    //   if ~isempty(Av)
+    if (!Av.empty()){
+      // Rcout << "updating Av" << std::endl;
+      //     for i = 1:n1
+      for (int i = 0; i<p; i++){
+        //       Av{i} = VA'*Av{i}*VA;
+        Av.slice(i) = VA.t()*Av.slice(i)*VA;
+        //   end
+      }
+      //     end
+    }
+    //     R = VA'*diag(1./sqrt(diag(D)))*VS';
+    // Rcout << "computing rotation matrix R" << std::endl;
+    arma::mat R = VA.t()*diagmat(1/sqrt(diagvec(D)))*VS.t();
+    //   
+    //   S = R*S;
+    S = R*S;
+    //   for j = 1:length(Sv)
+    // Rcout << "updating Sv" << std::endl;
+    for (int j = 0; j<n; j++){
+      //     Sv{j} = R*Sv{j}*R';
+      Sv.slice(j) = R*Sv.slice(j)*R.t();
+      //   end
+    }
+    if (bias){ 
+      // Rcout << "updating Mu" << std::endl;
+      Mu = Mu + dMu;
+      // end
+    }
+    //   end
   }
-  // end
-  //   end
-  
+
   // if n1 < n1x
   //   [ A, Av ] = addmrows( A, Av, Ir, n1x, Va );
   // [ Mu, Muv ] = addmrows( Mu, Muv, Ir, n1x, Vmu );

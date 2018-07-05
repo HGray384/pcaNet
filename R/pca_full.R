@@ -1,5 +1,5 @@
 pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
-                     bias = TRUE, verbose=TRUE){
+                     bias = TRUE, rotate2pca = TRUE, verbose=TRUE){
   # comment this out before running
   # set.seed(20)
   # X <- missing.dataset
@@ -162,11 +162,16 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   } else {
     bias <- 0 # C++ false
   }
+  if(rotate2pca){
+    rotate2pca <- 1 # C++ true
+  } else {
+    rotate2pca <- 0 # C++ false
+  }
   ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
                             Mu = Mu, Muv = Muv, Vmu = Vmu,
                             hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i,
                             Isv = Isv, M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, 
-                            bias = bias, niter_broadprior = opts$niter_broadprior, 
+                            bias = bias, rotate2pca = rotate2pca, niter_broadprior = opts$niter_broadprior, 
                             use_prior = use_prior, use_postvar = use_postvar,
                             maxiters = maxiters, verbose = verbose)
   
