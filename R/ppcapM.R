@@ -92,7 +92,7 @@
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
 ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
-                   verbose=TRUE, ...) {
+                   loglike = TRUE, verbose=TRUE, ...) {
 
   if (!is.na(seed)) 
     set.seed(seed)
@@ -151,23 +151,27 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
                              Hinton=TRUE)
   }
   
-  # compute log-likelihood scores
-  loglikeobs <- compute_loglikeobs(dat = t(myMatsaved), covmat = ppcaOutput$C,
-                                   meanvec = mu,
-                                   verbose = verbose)
-  
-  loglikeimp <- compute_loglikeimp(dat = t(myMatsaved), A = ppcaOutput$W,
-                                   S = t(X),
-                                   covmat = ppcaOutput$C, 
-                                   meanvec = mu,
-                                   verbose = verbose)
+  if (loglike){
+    # compute log-likelihood scores
+    loglikeobs <- compute_loglikeobs(dat = t(myMatsaved), covmat = ppcaOutput$C,
+                                     meanvec = mu,
+                                     verbose = verbose)
+    
+    loglikeimp <- compute_loglikeimp(dat = t(myMatsaved), A = ppcaOutput$W,
+                                     S = t(X),
+                                     covmat = ppcaOutput$C, 
+                                     meanvec = mu,
+                                     verbose = verbose)
+  }
   # Also return the standard ppcaNet output:
   output <- list()
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
-  output[["logLikeObs"]] <- loglikeobs
-  output[["logLikeImp"]] <- loglikeimp
+  if (loglike) {
+    output[["logLikeObs"]] <- loglikeobs
+    output[["logLikeImp"]] <- loglikeimp
+  }
   output[["pcaMethodsRes"]]  <- pcaMethodsRes
   
   return(output)

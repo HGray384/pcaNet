@@ -1,5 +1,6 @@
 pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
-                     bias = TRUE, rotate2pca = TRUE, verbose=TRUE){
+                     bias = TRUE, rotate2pca = TRUE, loglike = TRUE, 
+                     verbose=TRUE){
   # comment this out before running
   # set.seed(20)
   # X <- missing.dataset
@@ -215,12 +216,15 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   } else {
     verbose <- FALSE # C++ false
   }
-  # compute log-likelihood scores
-  loglikeobs <- compute_loglikeobs(myMatsaved, ppcaOutput$C, ppcaOutput$m,
-                                   verbose)
   
-  loglikeimp <- compute_loglikeimp(myMatsaved, ppcaOutput$W, t(ppcaOutput$scores),
-                                   ppcaOutput$C, ppcaOutput$m, verbose)
+  if (loglike){
+    # compute log-likelihood scores
+    loglikeobs <- compute_loglikeobs(myMatsaved, ppcaOutput$C, ppcaOutput$m,
+                                     verbose)
+    
+    loglikeimp <- compute_loglikeimp(myMatsaved, ppcaOutput$W, t(ppcaOutput$scores),
+                                     ppcaOutput$C, ppcaOutput$m, verbose)
+  }
   
   # Return standard ppcaNet output:
   
@@ -228,8 +232,10 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
-  output[["logLikeObs"]] <- loglikeobs
-  output[["logLikeImp"]] <- loglikeimp
+  if (loglike){
+    output[["logLikeObs"]] <- loglikeobs
+    output[["logLikeImp"]] <- loglikeimp
+  }
   output[["numIter"]]  <- ppcaOutput$numIter
   output[["pcaMethodsRes"]]  <- pcaMethodsRes
   
