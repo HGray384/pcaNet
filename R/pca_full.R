@@ -232,6 +232,7 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
+  output[["m"]]              <- ppcaOutput$m
   if (loglike){
     output[["logLikeObs"]] <- loglikeobs
     output[["logLikeImp"]] <- loglikeimp

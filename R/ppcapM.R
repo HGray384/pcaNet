@@ -92,7 +92,8 @@
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
 ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
-                   loglike = TRUE, verbose=TRUE, ...) {
+                   center = TRUE, scale = FALSE, loglike = TRUE, 
+                   verbose=TRUE, ...) {
 
   if (!is.na(seed)) 
     set.seed(seed)
@@ -104,9 +105,10 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
   nMissing <- length(hidden)
   
   mu <- colMeans(myMat, na.rm = TRUE)
-  
+
   myMatsaved      <- myMat
   
+  myMat <- scale(myMat, center = center, scale = scale)
   
   if(nMissing) { myMat[hidden] <- 0 } 
   
@@ -168,6 +170,7 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
+  output[["m"]]             <- mu
   if (loglike) {
     output[["logLikeObs"]] <- loglikeobs
     output[["logLikeImp"]] <- loglikeimp

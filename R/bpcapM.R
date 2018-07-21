@@ -166,6 +166,7 @@ bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100,
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
+  output[["m"]]              <- ppcaOutput$mu
   if (loglike){
     output[["logLikeObs"]] <- loglikeobs
     output[["logLikeImp"]] <- loglikeimp
