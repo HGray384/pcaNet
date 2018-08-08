@@ -92,8 +92,7 @@
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
 ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
-                   center = TRUE, scale = FALSE, loglike = TRUE, 
-                   verbose=TRUE, ...) {
+                   loglike = TRUE, verbose=TRUE, ...) {
 
   if (!is.na(seed)) 
     set.seed(seed)
@@ -107,8 +106,6 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
   mu <- colMeans(myMat, na.rm = TRUE)
 
   myMatsaved      <- myMat
-  
-  myMat <- scale(myMat, center = center, scale = scale)
   
   if(nMissing) { myMat[hidden] <- 0 } 
   
