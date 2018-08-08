@@ -152,6 +152,7 @@ List bpcaNet (arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, 
     if((i+1) % 10 == 0)
     {
       dtau = std::abs(std::log10(tau) - std::log10(tauold));
+      std::cout << dtau << "\n";
       if ( dtau < threshold )
       {
         break;
