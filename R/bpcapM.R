@@ -89,7 +89,8 @@
 #' 
 #' # covariance estimation
 #' norm(bp$Sigma-Sigma, type="F")^2/(length(X))
-bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100, ...) {
+bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100,
+                   loglike = TRUE ,verbose=TRUE, ...) {
 
   N <- nrow(myMat)
   D <- ncol(myMat)
@@ -136,7 +137,28 @@ bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100, ...) {
   pcaMethodsRes@loadings  <- ppcaOutput$W
   pcaMethodsRes@R2cum     <- R2cum
   pcaMethodsRes@method    <- "bpca"
+  pcaMethodsRes@missing   <- isNAmat
   
+  # create hinton diagram
+  if(verbose){
+    plotrix::color2D.matplot(ppcaOutput$W,
+                             extremes=c("black","white"),
+                             main="Hinton diagram of loadings",
+                             Hinton=TRUE)
+  }
+  
+  if (loglike){
+    # compute log-likelihood scores
+    loglikeobs <- compute_loglikeobs(dat = t(myMatsaved), covmat = ppcaOutput$C,
+                                     meanvec = ppcaOutput$mu,
+                                     verbose = verbose)
+    
+    loglikeimp <- compute_loglikeimp(dat = t(myMatsaved), A = ppcaOutput$W, 
+                                     S = t(ppcaOutput$scores),
+                                     covmat = ppcaOutput$C, 
+                                     meanvec = ppcaOutput$mu,
+                                     verbose = verbose)
+  }
   
   # Return standard ppcaNet output:
   
@@ -144,6 +166,11 @@ bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100, ...) {
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
+  output[["m"]]              <- ppcaOutput$mu
+  if (loglike){
+    output[["logLikeObs"]] <- loglikeobs
+    output[["logLikeImp"]] <- loglikeimp
+  }
   output[["pcaMethodsRes"]]  <- pcaMethodsRes
   
 

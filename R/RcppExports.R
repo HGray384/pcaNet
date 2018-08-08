@@ -5,23 +5,11 @@ bpcaNet <- function(myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nom
     .Call('_ppcaNet_bpcaNet', PACKAGE = 'ppcaNet', myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
 }
 
-pca_updates <- function(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias = 1L, niter_broadprior = 100L, use_prior = 1L, maxiters = 1000L) {
-    .Call('_ppcaNet_pca_updates', PACKAGE = 'ppcaNet', X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, niter_broadprior, use_prior, maxiters)
-}
-
-mpcaNet <- function(Y, W, hidden, nMissing, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
-    .Call('_ppcaNet_mpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
+pca_updates <- function(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias = 1L, rotate2pca = 1L, niter_broadprior = 100L, use_prior = 1L, use_postvar = 1L, maxiters = 1000L, verbose = 1L) {
+    .Call('_ppcaNet_pca_updates', PACKAGE = 'ppcaNet', X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, rotate2pca, niter_broadprior, use_prior, use_postvar, maxiters, verbose)
 }
 
 ppcaNet <- function(myMat, N, D, W, hidden, nMissing, nPcs = 2L, threshold = 1e-5, maxIterations = 1000L) {
     .Call('_ppcaNet_ppcaNet', PACKAGE = 'ppcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
-}
-
-ppcaSensible <- function(Y, W, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
-    .Call('_ppcaNet_ppcaSensible', PACKAGE = 'ppcaNet', Y, W, v, traceS, MaxIter, TolFun, TolX)
-}
-
-vbpcaNet <- function(Y, W, hidden, nMissing, v, traceS, MaxIter = 1000L, TolFun = 1e-6, TolX = 1e-6) {
-    .Call('_ppcaNet_vbpcaNet', PACKAGE = 'ppcaNet', Y, W, hidden, nMissing, v, traceS, MaxIter, TolFun, TolX)
 }
 

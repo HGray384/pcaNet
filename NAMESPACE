@@ -1,4 +1,5 @@
 useDynLib(ppcaNet)
 importFrom(Rcpp, evalCpp)
 importClassesFrom(pcaMethods, pcaRes)
+importFrom("stats", "cov", "cov2cor", "rnorm", "runif")
 exportPattern("^[[:alpha:]]+")

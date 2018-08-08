@@ -91,7 +91,9 @@
 #' 
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
-ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000, ...) {
+ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
+                   center = TRUE, scale = FALSE, loglike = TRUE, 
+                   verbose=TRUE, ...) {
 
   if (!is.na(seed)) 
     set.seed(seed)
@@ -102,8 +104,11 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000, .
   hidden   <- which(is.na(myMat))
   nMissing <- length(hidden)
   
+  mu <- colMeans(myMat, na.rm = TRUE)
+
   myMatsaved      <- myMat
   
+  myMat <- scale(myMat, center = center, scale = scale)
   
   if(nMissing) { myMat[hidden] <- 0 } 
   
@@ -138,12 +143,38 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000, .
   pcaMethodsRes@loadings <- Worth
   pcaMethodsRes@R2cum    <- R2cum
   pcaMethodsRes@method   <- "ppca"
+  pcaMethodsRes@missing  <- is.na(myMatsaved)
   
+  # create hinton diagram
+  if(verbose){
+    plotrix::color2D.matplot(ppcaOutput$W,
+                             extremes=c("black","white"),
+                             main="Hinton diagram of loadings",
+                             Hinton=TRUE)
+  }
+  
+  if (loglike){
+    # compute log-likelihood scores
+    loglikeobs <- compute_loglikeobs(dat = t(myMatsaved), covmat = ppcaOutput$C,
+                                     meanvec = mu,
+                                     verbose = verbose)
+    
+    loglikeimp <- compute_loglikeimp(dat = t(myMatsaved), A = ppcaOutput$W,
+                                     S = t(X),
+                                     covmat = ppcaOutput$C, 
+                                     meanvec = mu,
+                                     verbose = verbose)
+  }
   # Also return the standard ppcaNet output:
   output <- list()
   output[["W"]]              <- ppcaOutput$W
   output[["sigmaSq"]]        <- ppcaOutput$ss
   output[["Sigma"]]          <- ppcaOutput$C
+  output[["m"]]             <- mu
+  if (loglike) {
+    output[["logLikeObs"]] <- loglikeobs
+    output[["logLikeImp"]] <- loglikeimp
+  }
   output[["pcaMethodsRes"]]  <- pcaMethodsRes
   
   return(output)
