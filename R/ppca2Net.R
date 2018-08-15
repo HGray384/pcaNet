@@ -1,51 +1,73 @@
-ppca2Net <- function(cov.mat, method.ggm=c("prob", "qval","number"),
-                     cutoff.ggm=0.8, plot=TRUE, verbose=TRUE){
+ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE){
+  
+  # extract the covariance matrix estimate
+  cov.mat <- ppcaOutput$Sigma
   
   # get variable names
   if(!is.null(colnames(cov.mat))){
     labs <- colnames(cov.mat)
   } else {
-    labs <- 1:ncol(cov.mat)
+    labs <- NULL
     if(verbose){
-      cat("no names for variables given \n")
+      cat("no names for variables given... \n")
     }
   }
   
   # extract the partial correlation matrix
   if(verbose){
-    cat("computing partial correlations \n")
+    cat("computing partial correlations... \n")
   }
-  pcor.mat <- corpcor::cor2pcor(cov2cor(cov.mat))
+  pcor.mat <- -cov2cor(chol2inv(chol(cov.mat)))
+  diag(pcor.mat) <- rep(1, ncol(pcor.mat))
   
-  # use GeneNet to assess significance
+  # use fdrtool to assess significance
   if(verbose){
-    cat("calculating edge and network statistics \n")
+    cat("calculating edge statistics... \n")
   }
-  edges <- GeneNet::network.test.edges(pcor.mat, fdr = TRUE, direct = FALSE,
-                                       plot=plot)
-  network <- GeneNet::extract.network(edges, 
-                                      method.ggm=method.ggm,
-                                      cutoff.ggm = cutoff.ggm,
-                                      verbose = verbose)
   
-  # get graphNEL object
+  edge.stats <- fdrtool::fdrtool(x = c(pcor.mat[lower.tri(pcor.mat)]),
+                                 statistic = "correlation",
+                                 plot = FALSE,
+                                 color.figure = FALSE,
+                                 verbose = FALSE)
+  
+  # create an igraph object
   if(verbose){
-    cat("creating graphNEL object \n")
+    cat("creating network... \n")
   }
-  network.nel <- GeneNet::network.make.graph(network,
-                                                  node.labels = labs,
-                                                  drop.singles = FALSE)
+  if(!any(edge.stats$qval<edge.stats$param[1])){
+    warning("no significant edges at this threshold: inspect $fdr.stats")
+  }
+  net.thresh <- ifelse(edge.stats$qval<edge.stats$param[1],
+                       pcor.mat[lower.tri(pcor.mat)],0)
+  net.mat <- matrix(0,
+                    nrow = nrow(pcor.mat),
+                    ncol = ncol(pcor.mat))
+  net.mat[lower.tri(net.mat)] <- net.thresh
+  net.mat <- net.mat + t(net.mat)
+  diag(net.mat) <- rep(1, nrow(pcor.mat))
+  colnames(net.mat) <- labs
+  rownames(net.mat) <- labs
+    
   
-  # # get the adjacency matrices
-  # if(verbose){
-  #   cat("creating graphAM object (adjacency matrix) \n")
-  # }
-  # network.AM <- as(network.nel, "graphAM")
-
+  g <- igraph::graph_from_adjacency_matrix(adjmatrix = net.mat,
+                                      mode = "undirected",
+                                      weighted = TRUE,
+                                      diag = FALSE)
+  g <- igraph::delete.vertices(g, igraph::degree(g)==0)
+  
+  # look to plot the graph
+  if (plot && any(edge.stats$qval<edge.stats$param[1])){
+    plot(g,
+         main = "Estimated network",
+         vertex.size = 10,
+         edge.width = 2)
+  }
+  
   # create output
   net <- list()
-  net[["edge.stats"]] <- edges
-  net[["net.stats"]] <- network.nel
+  net[["graph"]] <- g
+  net[["fdr.stats"]] <- edge.stats
   
   return(net)
 }
