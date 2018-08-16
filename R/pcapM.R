@@ -28,6 +28,8 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
     else {
       scale.meth <- "rms"
     }
+  } else {
+    scale.meth <- "none"
   }
   
   # call to ppcapM or bpcapM
@@ -65,7 +67,7 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
     recData <- sweep(recData, 2, sc, "*")
     recData <- sweep(recData, 2, m, "+")
     completeObs[missing] <- recData[missing]
-    res$pcamethodsRes@completeObs <- completeObs
+    res$pcaMethodsRes@completeObs <- completeObs
   }
   
   # return results

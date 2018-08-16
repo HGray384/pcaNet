@@ -51,7 +51,8 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     ncomp <- min(n, p)-1
   }
   
-  # Missing values are marked as NaNs
+  # Missing values are marked as NaNs for consistency with MATLAB code,
+  # from which this was translated
   if (any(is.na(X))){
     X[which(is.na(X))] <- NaN
   }
@@ -186,6 +187,8 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     print('Maximum number of iterations reached')
   }
   
+  bias <- as.logical(bias)
+  
   # R2 computation
   R2cum      <- rep(NA, nPcs)
   TSS        <- sum(myMatsaved^2, na.rm = TRUE)
@@ -202,6 +205,29 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   pcaMethodsRes@R2cum     <- R2cum
   pcaMethodsRes@method    <- algorithm
   pcaMethodsRes@missing   <- is.na(myMatsaved)
+  pcaMethodsRes@nPcs <- ncomp # do we need to edit this?
+  pcaMethodsRes@nObs <- ncol(myMatsaved)
+  pcaMethodsRes@nVar <- nrow(myMatsaved)
+  pcaMethodsRes@sDev <- apply(pcaMethodsRes@scores, 2, sd)
+  pcaMethodsRes@center <- as.numeric(ppcaOutput$m)
+  pcaMethodsRes@centered <- bias
+  pcaMethodsRes@scale <- rep(1, nrow(myMatsaved))
+  pcaMethodsRes@scaled <- "none"
+  pcaMethodsRes@R2 <- pcaMethodsRes@R2cum[1]
+  if (length(pcaMethodsRes@R2cum) > 1) {
+    pcaMethodsRes@R2 <- c(pcaMethodsRes@R2,
+                              diff(pcaMethodsRes@R2cum))
+  }
+  
+  if(any(!M)){
+    completeObs <- myMatsaved
+    recData <- tcrossprod(pcaMethodsRes@scores[, 1:nPcs, drop = FALSE],
+                          pcaMethodsRes@loadings[, 1:nPcs, drop = FALSE])
+    # recData <- sweep(recData, 2, sc, "*")
+    recData <- sweep(recData, 2, ppcaOutput$m, "+")
+    completeObs[missing] <- recData[missing]
+    pcaMethodsRes@completeObs <- completeObs
+  }
   
   # create hinton diagram
   if(verbose){
