@@ -1,7 +1,64 @@
+#' @title A wrapper for pcaMethods function implementations
+#' 
+#' @description Implements the equivalent of 
+#'   \code{\link[pcaMethods:pca]{pca}}.
+#'   This function preprocesses the data as specified by the user,
+#'   then calls ppcapM or bpcapM, and finally handles this output
+#'   to return a list. One element of the output is a pcaRes object.
+#'
+#' @param myMat \code{matrix} -- Data matrix with 
+#'   variables in columns and observations in rows. The
+#'   data may contain missing values, denoted as \code{NA}. 
+#' @param nPcs \code{numeric} -- Number of components used for
+#'   re-estimation. Choosing few components may decrease the
+#'   estimation precision.
+#' @param method \code{c("ppca", "bpca")} -- frequentist or
+#'   Bayesian estimation of model parameters.
+#' @param seed \code{numeric} -- the random number seed used, useful
+#'   to specify when comparing algorithms.
+#' @param threshold \code{numeric} -- Convergence threshold. 
+#'   If the increase in precision of an update
+#'   falls below this then the algorithm is stopped.
+#' @param maxIterations \code{numeric} -- Maximum number of estimation
+#'   steps. 
+#' @param center \code{logical} -- should the data be centered?
+#' @param scale \code{c("none", "pareto", "vector", "uv")} --
+#'   which method of scaling should be used? See 
+#'   \code{\link[pcaMethods:pca]{pca}}.
+#' @param loglike \code{logical} -- should the log-likelihood
+#'   of the estimated parameters be returned? See Details.
+#' @param verbose \code{logical} -- verbose intermediary 
+#'   algorithm output.
+#' @param ... 
+#' 
+#' @details See \code{\link{ppcapM}} and \code{\link{bpcapM}} for 
+#'   the algorithm specifics. \code{loglike} indicates whether 
+#'   log-likelihood values for the resulting estimates should 
+#'   be computed. This can be useful to compare different algorithms.
+#'   . 
+#'
+#' @return {A \code{list} of 5 or 7 elements, depending on the value
+#' of \code{loglike}:
+#' \describe{
+#' \item{W}{\code{matrix} -- the estimated loadings.}
+#' \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
+#' \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
+#' \item{m}{\code{numeric} -- the estimated mean vector.}
+#' \item{logLikeObs}{\code{numeric} -- the log-likelihood value
+#' of the observed data given the estimated parameters.}
+#' \item{logLikeImp}{\code{numeric} -- the log-likelihood value
+#' of the imputed data given the estimated parameters.}
+#' \item{pcaMethodsRes}{\code{class} -- 
+#'   see \linkS4class{pcaRes}.}
+#' }}
+#' @export
+#'
+#' @examples
 pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
-                  maxIterations=1000, center = TRUE, scale = TRUE, 
+                  maxIterations=1000, center = TRUE, 
+                  scale = c("none", "pareto", "vector", "uv"), 
                   loglike = TRUE, verbose=TRUE, ...) {
-  # preprocessing
+  ## preprocessing
   if (nPcs > ncol(myMat)) {
     warning("more components than matrix columns requested")
     nPcs <- min(dim(myMat))
@@ -10,27 +67,44 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
     warning("more components than matrix rows requested")
     nPcs <- min(dim(myMat))
   }
-  
+  # any missing
   missing <- is.na(myMat)
-  myMat <- scale(myMat, center = center, scale = scale)
-  m <- attr(myMat, "scaled:center")
-  sc <- attr(myMat, "scaled:scale")
-  if (is.null(m)){
+  
+  # scaling and centering
+  if(is.null(scale)){
+    scale = "none"
+  }
+  if(!scale %in% c("none", "pareto", "vector", "uv")){
+    stop("please provide a valid scaling method")
+  }
+  if(is.null(center)){
+    center = FALSE
+  }
+  if(!is.logical(center)){
+    stop("please provide TRUE or FALSE for centering")
+  }
+  if(center){
+    m <- colMeans(myMat, na.rm = TRUE)
+  }
+  else {
     m <- rep(0, ncol(myMat))
   }
-  if (is.null(sc)){
+  myMat <- sweep(myMat, 2, m, "-")
+  
+  if(scale=="none"){
     sc <- rep(1, ncol(myMat))
   }
-  if (scale){
-    if (center) {
-      scale.meth <- "uv"
-    }
-    else {
-      scale.meth <- "rms"
-    }
-  } else {
-    scale.meth <- "none"
+  if(scale=="uv"){
+    sc <- apply(myMat, 2, sd, na.rm = TRUE)
   }
+  if (scale == "pareto") {
+    sc <- sqrt(apply(myMat, 2, sd, na.rm = TRUE))
+  }
+  if (scale == "vector") {
+    sc <- apply(myMat, 2, function(x){sqrt(sum(x^2, na.rm = TRUE))})
+  }
+  myMat <- sweep(myMat, 2, sc, "/")
+  
   
   # call to ppcapM or bpcapM
   if (method=="ppca"){
@@ -53,22 +127,22 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
   res$pcaMethodsRes@center <- m
   res$pcaMethodsRes@centered <- center
   res$pcaMethodsRes@scale <- sc
-  res$pcaMethodsRes@scaled <- scale.meth
+  res$pcaMethodsRes@scaled <- scale
   res$pcaMethodsRes@R2 <- res$pcaMethodsRes@R2cum[1]
   if (length(res$pcaMethodsRes@R2cum) > 1) {
     res$pcaMethodsRes@R2 <- c(res$pcaMethodsRes@R2,
                               diff(res$pcaMethodsRes@R2cum))
   }
   
+  completeObs <- myMat
   if(any(missing)){
-    completeObs <- myMat
     recData <- tcrossprod(res$pcaMethodsRes@scores[, 1:nPcs, drop = FALSE],
                           res$pcaMethodsRes@loadings[, 1:nPcs, drop = FALSE])
     recData <- sweep(recData, 2, sc, "*")
     recData <- sweep(recData, 2, m, "+")
     completeObs[missing] <- recData[missing]
-    res$pcaMethodsRes@completeObs <- completeObs
   }
+  res$pcaMethodsRes@completeObs <- completeObs
   
   # return results
   return(res)

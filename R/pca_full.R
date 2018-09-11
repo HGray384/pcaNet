@@ -1,3 +1,61 @@
+#' @title A wrapper for PCAMV (MATLAB) function implementations
+#'
+#' @description Implements the PPCA algorithms from (cite), previously
+#'   only available in MATLAB. One element of the output is a pcaRes 
+#'   object, providing an interface between PCAMV and pcaMethods.
+#'
+#' @param X \code{matrix} -- Data matrix with 
+#'   observations in columns and variables in rows. The
+#'   data may contain missing values, denoted as \code{NA},
+#'   or \code{NaN}. 
+#' @param ncomp \code{numeric} -- Number of components used for
+#'   re-estimation. Choosing few components may decrease the
+#'   estimation precision. Setting to \code{NA} results in 
+#'   \code{ncomp} = min(n, p) -1, which will be slow for large
+#'   data.
+#' @param algorithm \code{c("ppca", "map", "vb")} -- the algorithm
+#'   to be used for estimation, see Details. 
+#' @param maxiters \code{numeric} -- Maximum number of estimation
+#'   steps.
+#' @param bias \code{logical} -- should the mean be estimated?
+#' @param rotate2pca \code{logical} -- should the solution be rotated
+#'   to a PCA basis? See Details.
+#' @param loglike \code{logical} -- should the log-likelihood
+#'   of the estimated parameters be returned? See Details.
+#' @param verbose \code{logical} -- verbose intermediary 
+#'   algorithm output.
+#'
+#' @details The \code{algorithm} argument provides the option of 
+#'   performing either 'ppca' for PPCA, 'vb' for BPCA using a 
+#'   variational approximation, or 'map' for a variational 
+#'   approximation ignoring posterior uncertainty (for faster
+#'   computation). See (cite) for the full models. Setting 
+#'   \code{rotate2pca} will perform a post-estimation rotation of
+#'   the scores and loadings matrices so that they satisfy the
+#'   PCA conditions of orthonormality, see (cite) for the 
+#'   derivations. \code{loglike} indicates whether 
+#'   log-likelihood values for the resulting estimates should 
+#'   be computed. This can be useful to compare different algorithms.
+#'
+#' @return {A \code{list} of 6 or 8 elements, depending on the value
+#' of \code{loglike}:
+#' \describe{
+#' \item{W}{\code{matrix} -- the estimated loadings.}
+#' \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
+#' \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
+#' \item{m}{\code{numeric} -- the estimated mean vector.}
+#' \item{logLikeObs}{\code{numeric} -- the log-likelihood value
+#' of the observed data given the estimated parameters.}
+#' \item{logLikeImp}{\code{numeric} -- the log-likelihood value
+#' of the imputed data given the estimated parameters.}
+#' \item{m}{\code{numeric} -- the number of iterations taken to 
+#' converge.}
+#' \item{pcaMethodsRes}{\code{class} -- 
+#'   see \linkS4class{pcaRes}.}
+#' }}
+#' @export
+#'
+#' @examples
 pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
                      bias = TRUE, rotate2pca = TRUE, loglike = TRUE, 
                      verbose=TRUE){
@@ -219,15 +277,15 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
                               diff(pcaMethodsRes@R2cum))
   }
   
+  completeObs <- myMatsaved
   if(any(!M)){
-    completeObs <- myMatsaved
     recData <- tcrossprod(pcaMethodsRes@scores[, 1:nPcs, drop = FALSE],
                           pcaMethodsRes@loadings[, 1:nPcs, drop = FALSE])
     # recData <- sweep(recData, 2, sc, "*")
     recData <- sweep(recData, 2, ppcaOutput$m, "+")
     completeObs[missing] <- recData[missing]
-    pcaMethodsRes@completeObs <- completeObs
   }
+  pcaMethodsRes@completeObs <- completeObs
   
   # create hinton diagram
   if(verbose){

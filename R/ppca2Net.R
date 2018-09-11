@@ -1,3 +1,45 @@
+#' @title Network reconstruction from PPCA
+#' 
+#' @description Constructs a conditional independence network
+#'   of the observed variables from the data using the implicitly
+#'   estimated covariance matrix within PPCA.
+#'
+#' @param ppcaOutput \code{list} -- the output object from running any
+#'   of the PPCA functions in this package.
+#' @param plot \code{logical} -- visualise the resulting network.
+#' @param verbose \code{logical} -- verbose intermediary output.
+#' 
+#' @details Covariance estimation is done as a preliminary step for
+#'   this function. The function then inverts this matrix, which can
+#'   be done very efficiently, to obtain the precision matrix. Then
+#'   the precision matrix is scaled to unit variance (diagonal) to
+#'   obtain partial correlation estimates in the off-diagonal entries,
+#'   which is a measure of conditional independence. A two component
+#'   mixture model is then fit to the distribution of partial 
+#'   correlations using \code{\link[fdrtool:fdrtool]{fdrtool}}. The
+#'   partial correlations that are not part of the 'null' component
+#'   are then selected as true edges of the network, effectively 
+#'   setting the null values to 0. The function then
+#'   visualises the resulting network using \code{\link[igraph]{plot.igraph}}. The
+#'   user can extract the \code{fdr.stats} element of this output to
+#'   view the full output of \code{\link[fdrtool:fdrtool]{fdrtool}},
+#'   from which the magnitude and significance of each partial 
+#'   correlation can be seen (and customised thresholding can be
+#'   performed). The \code{graph} element of the output is an
+#'   \linkS4class{igraph} object, and so can be used to easily
+#'   make alternative visualisations or compute graph statistics.
+#'
+#' @return {A \code{list} of 2 elements:
+#' \describe{
+#' \item{graph}{\linkS4class{igraph} -- Contains the network 
+#' information.}
+#' \item{fdr.stats}{\code{list} -- the full output of an internal call
+#' to \code{\link[fdrtool:fdrtool]{fdrtool}}. Can be useful to inspect
+#' the statistics upon which the network was reconstructed.}
+#' }}
+#' @export
+#'
+#' @examples
 ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE){
   
   # extract the covariance matrix estimate
