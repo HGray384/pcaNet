@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 bpcaNet <- function(myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs = 2L, threshold = 1e-4, maxIterations = 200L) {
-    .Call('_ppcaNet_bpcaNet', PACKAGE = 'ppcaNet', myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
+    .Call('_pcaNet_bpcaNet', PACKAGE = 'pcaNet', myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol, nomissIndex, missIndex, nMissing, nPcs, threshold, maxIterations)
 }
 
 pca_updates <- function(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias = 1L, rotate2pca = 1L, niter_broadprior = 100L, use_prior = 1L, use_postvar = 1L, maxiters = 1000L, verbose = 1L) {
-    .Call('_ppcaNet_pca_updates', PACKAGE = 'ppcaNet', X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, rotate2pca, niter_broadprior, use_prior, use_postvar, maxiters, verbose)
+    .Call('_pcaNet_pca_updates', PACKAGE = 'pcaNet', X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata, Nobs_i, Isv, M, IX, JX, rms, errMx, bias, rotate2pca, niter_broadprior, use_prior, use_postvar, maxiters, verbose)
 }
 
 ppcaNet <- function(myMat, N, D, W, hidden, nMissing, nPcs = 2L, threshold = 1e-5, maxIterations = 1000L) {
-    .Call('_ppcaNet_ppcaNet', PACKAGE = 'ppcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
+    .Call('_pcaNet_ppcaNet', PACKAGE = 'pcaNet', myMat, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
 }
 

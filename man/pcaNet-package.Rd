@@ -1,25 +1,25 @@
-\name{ppcaNet-package}
-\alias{ppcaNet-package}
-\alias{ppcaNet}
+\name{pcaNet-package}
+\alias{pcaNet-package}
+\alias{pcaNet}
 \docType{package}
 \title{
-\packageTitle{ppcaNet}
+\packageTitle{pcaNet}
 }
 \description{
-\packageDescription{ppcaNet}
+\packageDescription{pcaNet}
 }
 \details{
 
 The DESCRIPTION file:
-\packageDESCRIPTION{ppcaNet}
-\packageIndices{ppcaNet}
+\packageDESCRIPTION{pcaNet}
+\packageIndices{pcaNet}
 ~~ An overview of how to use the package, including the most important ~~
 ~~ functions ~~
 }
 \author{
-\packageAuthor{ppcaNet}
+\packageAuthor{pcaNet}
 
-Maintainer: \packageMaintainer{ppcaNet}
+Maintainer: \packageMaintainer{pcaNet}
 }
 \references{
 ~~ Literature or other references for background information ~~

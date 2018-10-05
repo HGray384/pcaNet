@@ -42,12 +42,9 @@
 #' @examples
 ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE){
   
-  # extract the covariance matrix estimate
-  cov.mat <- ppcaOutput$Sigma
-  
   # get variable names
-  if(!is.null(colnames(cov.mat))){
-    labs <- colnames(cov.mat)
+  if(!is.null(colnames(ppcaOutput$Sigma))){
+    labs <- colnames(ppcaOutput$Sigma)
   } else {
     labs <- NULL
     if(verbose){
@@ -59,7 +56,7 @@ ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE){
   if(verbose){
     cat("computing partial correlations... \n")
   }
-  pcor.mat <- -cov2cor(chol2inv(chol(cov.mat)))
+  pcor.mat <- -cov2cor(ppca2Covinv(ppcaOutput))
   diag(pcor.mat) <- rep(1, ncol(pcor.mat))
   
   # use fdrtool to assess significance

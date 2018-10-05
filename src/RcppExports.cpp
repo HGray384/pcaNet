@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // bpcaNet
 List bpcaNet(arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs, double threshold, int maxIterations);
-RcppExport SEXP _ppcaNet_bpcaNet(SEXP myMatSEXP, SEXP covySEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+RcppExport SEXP _pcaNet_bpcaNet(SEXP myMatSEXP, SEXP covySEXP, SEXP NSEXP, SEXP DSEXP, SEXP hiddenSEXP, SEXP numberOfNonNAvaluesInEachColSEXP, SEXP nomissIndexSEXP, SEXP missIndexSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,7 +30,7 @@ END_RCPP
 }
 // pca_updates
 List pca_updates(arma::mat X, double V, arma::mat A, arma::cube Av, arma::vec Va, arma::mat S, arma::cube Sv, arma::vec Mu, arma::vec Muv, double Vmu, const double hpVa, const double hpVb, const double hpV, const int ndata, const arma::vec Nobs_i, arma::vec Isv, arma::mat M, const arma::uvec IX, const arma::uvec JX, double rms, arma::mat errMx, const int bias, const int rotate2pca, const int niter_broadprior, const int use_prior, const int use_postvar, const int maxiters, const int verbose);
-RcppExport SEXP _ppcaNet_pca_updates(SEXP XSEXP, SEXP VSEXP, SEXP ASEXP, SEXP AvSEXP, SEXP VaSEXP, SEXP SSEXP, SEXP SvSEXP, SEXP MuSEXP, SEXP MuvSEXP, SEXP VmuSEXP, SEXP hpVaSEXP, SEXP hpVbSEXP, SEXP hpVSEXP, SEXP ndataSEXP, SEXP Nobs_iSEXP, SEXP IsvSEXP, SEXP MSEXP, SEXP IXSEXP, SEXP JXSEXP, SEXP rmsSEXP, SEXP errMxSEXP, SEXP biasSEXP, SEXP rotate2pcaSEXP, SEXP niter_broadpriorSEXP, SEXP use_priorSEXP, SEXP use_postvarSEXP, SEXP maxitersSEXP, SEXP verboseSEXP) {
+RcppExport SEXP _pcaNet_pca_updates(SEXP XSEXP, SEXP VSEXP, SEXP ASEXP, SEXP AvSEXP, SEXP VaSEXP, SEXP SSEXP, SEXP SvSEXP, SEXP MuSEXP, SEXP MuvSEXP, SEXP VmuSEXP, SEXP hpVaSEXP, SEXP hpVbSEXP, SEXP hpVSEXP, SEXP ndataSEXP, SEXP Nobs_iSEXP, SEXP IsvSEXP, SEXP MSEXP, SEXP IXSEXP, SEXP JXSEXP, SEXP rmsSEXP, SEXP errMxSEXP, SEXP biasSEXP, SEXP rotate2pcaSEXP, SEXP niter_broadpriorSEXP, SEXP use_priorSEXP, SEXP use_postvarSEXP, SEXP maxitersSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -68,7 +68,7 @@ END_RCPP
 }
 // ppcaNet
 List ppcaNet(arma::mat myMat, int N, int D, arma::mat W, arma::uvec hidden, int nMissing, int nPcs, double threshold, int maxIterations);
-RcppExport SEXP _ppcaNet_ppcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
+RcppExport SEXP _pcaNet_ppcaNet(SEXP myMatSEXP, SEXP NSEXP, SEXP DSEXP, SEXP WSEXP, SEXP hiddenSEXP, SEXP nMissingSEXP, SEXP nPcsSEXP, SEXP thresholdSEXP, SEXP maxIterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -87,13 +87,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_ppcaNet_bpcaNet", (DL_FUNC) &_ppcaNet_bpcaNet, 12},
-    {"_ppcaNet_pca_updates", (DL_FUNC) &_ppcaNet_pca_updates, 28},
-    {"_ppcaNet_ppcaNet", (DL_FUNC) &_ppcaNet_ppcaNet, 9},
+    {"_pcaNet_bpcaNet", (DL_FUNC) &_pcaNet_bpcaNet, 12},
+    {"_pcaNet_pca_updates", (DL_FUNC) &_pcaNet_pca_updates, 28},
+    {"_pcaNet_ppcaNet", (DL_FUNC) &_pcaNet_ppcaNet, 9},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_ppcaNet(DllInfo *dll) {
+RcppExport void R_init_pcaNet(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

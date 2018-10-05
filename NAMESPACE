@@ -1,5 +1,7 @@
-useDynLib(ppcaNet)
+useDynLib(pcaNet)
 importFrom(Rcpp, evalCpp)
 importClassesFrom(pcaMethods, pcaRes)
 importFrom("stats", "cov", "cov2cor", "rnorm", "runif")
+importFrom("pheatmap", "pheatmap")
+importFrom("RColorBrewer", "brewer.pal")
 exportPattern("^[[:alpha:]]+")

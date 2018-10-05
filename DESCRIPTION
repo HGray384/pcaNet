@@ -1,4 +1,4 @@
-Package: ppcaNet
+Package: pcaNet
 Type: Package
 Title: Probabilistic principal components analysis
 Version: 1.0
@@ -10,6 +10,6 @@ Description: Various implementations of algorithms for probabilistic PCA,
 License: gpl (>= 2) | COPYING
 Depends: R (>= 3.3.0)
 biocViews: pcaMethods 
-Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), fdrtool, plotrix, igraph
+Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), fdrtool, plotrix, igraph, pheatmap, RColorBrewer
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.0
