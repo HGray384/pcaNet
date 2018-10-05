@@ -14,5 +14,5 @@ This version can be directly installed from the R console using:
 
 ```
 # install.packages("devtools")
-devtools::install_github("HGray384/TAS")
+devtools::install_github("HGray384/pcaNet")
 ```
