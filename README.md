@@ -1,7 +1,7 @@
 # pcaNet
 Probabilistic principal components analysis for covariance matrix estimation and network reconstruction R-package (dev version)
 
-Implementation of the algorithms from Gray and Kirk, (manuscript in progress) for probabilistic principal components 
+Implementation of the algorithms from Gray and Kirk, (manuscript in preparation) for probabilistic principal components 
 analysis (PPCA) focussed on high-dimensional covariance matrix estimation and network reconstruction. PPCA
 is a model-based approach for dimension reduction, which may be applied to incomplete data and implicitly performs 
 covariance matrix estimation during model fitting. This package implements a number of PPCA algorithms and
