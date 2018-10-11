@@ -4,7 +4,10 @@
 \alias{ppca2Net}
 \title{Network reconstruction from PPCA}
 \usage{
-ppca2Net(ppcaOutput, plot = TRUE, verbose = TRUE)
+ppca2Net(ppcaOutput, plot = TRUE, verbose = TRUE, vertex.size = 10,
+  edge.width = 2, vertex.label.cex = 0.4, vertex.color = "cyan",
+  vertex.label.color = "black", edge.color = "pink",
+  vertex.label.family = "Helvetica", vertex.label = NULL)
 }
 \arguments{
 \item{ppcaOutput}{\code{list} -- the output object from running any
@@ -13,6 +16,22 @@ of the PPCA functions in this package.}
 \item{plot}{\code{logical} -- visualise the resulting network.}
 
 \item{verbose}{\code{logical} -- verbose intermediary output.}
+
+\item{vertex.size}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{edge.width}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{vertex.label.cex}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{vertex.color}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{vertex.label.color}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{edge.color}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{vertex.label.family}{see \code{\link[igraph]{igraph.plotting}}}
+
+\item{vertex.label}{see \code{\link[igraph]{igraph.plotting}}}
 }
 \value{
 {A \code{list} of 2 elements:
@@ -41,8 +60,8 @@ Covariance estimation is done as a preliminary step for
   partial correlations that are not part of the 'null' component
   are then selected as true edges of the network, effectively 
   setting the null values to 0. The function then
-  visualises the resulting network using \code{\link[igraph]{plot.igraph}}. The
-  user can extract the \code{fdr.stats} element of this output to
+  visualises the resulting network using \code{\link[igraph]{plot.igraph}}.
+  The user can extract the \code{fdr.stats} element of this output to
   view the full output of \code{\link[fdrtool:fdrtool]{fdrtool}},
   from which the magnitude and significance of each partial 
   correlation can be seen (and customised thresholding can be

@@ -7,9 +7,9 @@ Author: Paul DW Kirk and Harry Gray
 Maintainer: <paul.kirk@mrc-bsu.cam.ac.uk> <harry.gray@mrc-bsu.cam.ac.uk>
 Description: Various implementations of algorithms for probabilistic PCA, 
   with an emphasis on covariance matrix estimation and network reconstruction.
-License: gpl (>= 2) | COPYING
+License: gpl (>= 2) | file COPYING
 Depends: R (>= 3.3.0)
 biocViews: pcaMethods 
-Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), fdrtool, plotrix, igraph, pheatmap, RColorBrewer
+Imports: Rcpp (>= 0.12.9), pcaMethods (>= 1.70.0), fdrtool, plotrix, igraph, pheatmap, methods, mvtnorm, RColorBrewer
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.0
