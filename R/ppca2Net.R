@@ -121,7 +121,7 @@ ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE, vertex.size = 10,
     igraph::V(g)$label        <- vertex.label
   }
   igraph::E(g)$color        <- edge.color#edgeColors
-  igraph::E(g)$width        <- edge.width*(igraph::E(g)$weight/max(igraph::E(g)$weight))
+  igraph::E(g)$width        <- edge.width*(abs(igraph::E(g)$weight)/max(abs(igraph::E(g)$weight)))
   igraph::V(g)$label.family <- vertex.label.family
   igraph::V(g)$label.cex    <- vertex.label.cex
   igraph::V(g)$label.color  <- vertex.label.color 
