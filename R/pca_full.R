@@ -283,7 +283,7 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
                           pcaMethodsRes@loadings[, 1:nPcs, drop = FALSE])
     # recData <- sweep(recData, 2, sc, "*")
     recData <- sweep(recData, 2, ppcaOutput$m, "+")
-    completeObs[missing] <- recData[missing]
+    completeObs[is.na(myMatsaved)] <- recData[is.na(myMatsaved)]
   }
   pcaMethodsRes@completeObs <- completeObs
   
