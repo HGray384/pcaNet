@@ -520,7 +520,7 @@ List pca_updates (arma::mat X,
       
     }
     
-    if (fabs(cost_old-cost) < 10e-6 && iter > 2){
+    // if (fabs(cost_old-cost) < 10e-6 && iter > 2){
       //   std::cout << "difference in cost function: " << fabs(cost-cost_old) << "\n";
       //   std::cout << "cost function didn't change: exiting..." << "\n";
       // //   convmsg = ...
@@ -532,8 +532,8 @@ List pca_updates (arma::mat X,
       //   sprintf(...
       //   [ 'Slowing-down stop. ' ...
       //   'You may continue by changing the gradient type.\n' ] );
-      break;
-    }
+      // break;
+    // }
     /////////////////////////////////////
     
     Aold = A;

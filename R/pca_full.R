@@ -240,7 +240,7 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   #########################
   
   nPcs <- ncomp
-  if(ppcaOutput$numIter == opts$maxiters)
+  if(ppcaOutput$numIter == maxiters)
   {
     print('Maximum number of iterations reached')
   }

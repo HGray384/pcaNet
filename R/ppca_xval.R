@@ -52,19 +52,19 @@
 ##' @examples
 ##' data(iris)
 ##' x <- iris[,1:4]
-##' pcIr <- pca(x, nPcs=3)
-##' q2 <- Q2(pcIr, x)
+##' pcIr <- pcaMethods::pca(x, nPcs=3)
+##' q2 <- pcaMethods::Q2(pcIr, x)
 ##' barplot(q2, main="Krzanowski CV", xlab="Number of PCs", ylab=expression(Q^2))
 ##' ## q2 for a single variable
-##' Q2(pcIr, x, variables=2)
-##' pcIr <- pca(x, nPcs=3, method="nipals")
-##' q2 <- Q2(pcIr, x, type="impute")
+##' pcaMethods::Q2(pcIr, x, variables=2)
+##' pcIr <- pcaMethods::pca(x, nPcs=3, method="nipals")
+##' q2 <- pcaMethods::Q2(pcIr, x, type="impute")
 ##' barplot(q2, main="Imputation CV", xlab="Number of PCs", ylab=expression(Q^2))
 ##' @author Henning Redestig, Ondrej Mikula
 ##' @keywords multivariate
 ppcaQ2 <- function (obj, originalData=pcaMethods::completeObs(obj$pcaMethodsRes), fold=5, 
                 nruncv=1, type=c("krzanowski", "impute"), verbose=interactive(),
-                variables=1:nVar(obj$pcaMethodsRes), ...) 
+                variables=1:(pcaMethods::nVar(obj$pcaMethodsRes)), ...) 
 {
  pcaMethods::Q2(object = obj$pcaMethodsRes, originalData=originalData, fold=fold, 
                 nruncv=nruncv, type=type, verbose=verbose,
