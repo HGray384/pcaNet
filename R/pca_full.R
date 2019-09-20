@@ -249,6 +249,22 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     } else {
       rotate2pca <- 0 # C++ false
     }
+    
+    print('A init is \n')
+    print(A)
+    print('S init is \n')
+    print(S)
+    print('Mu init is \n')
+    print(Mu)
+    print('V init is \n')
+    print(V)
+    print('Av init is \n')
+    print(Av)
+    print('Sv init is \n')
+    print(Sv)
+    print('Muv init is \n')
+    print(Muv)
+    
     ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
                               Mu = Mu, Muv = Muv, Vmu = Vmu,
                               hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i,

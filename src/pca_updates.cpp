@@ -218,6 +218,11 @@ List pca_updates (arma::mat X,
     //   Mu = Mu + dMu;
     // }
     // }
+    Rcout<<"\n S (pre-rotate) is : " << std::endl;
+    for(int i=0; i < ncomp; ++i) {
+      for(int  j=0; j < n; ++j)
+        Rcout << S(i, j) << " ";
+    }
     if (rotate2pca){
       //   [ dMu, A, Av, S, Sv ] = RotateToPCA( ...
       //     A, Av, S, Sv, Isv, obscombj, opts.bias );
@@ -239,7 +244,7 @@ List pca_updates (arma::mat X,
       // end
       //   
       //   covS = S*S';
-      arma::mat covS = arma::cov(S.t(), 1);
+      arma::mat covS = S*S.t();
       // if isempty(Isv)
       if (Isv.empty()){
         // Rcout << "adding Sv to covS" << std::endl;
@@ -261,6 +266,7 @@ List pca_updates (arma::mat X,
       //   %covS = covS / (n2-n1);
       //   [VS,D] = eig(covS);
       // Rcout << "computing eigenvalue decomposition of covS" << std::endl;
+      covS = covS / n;
       arma::mat VS;
       arma::vec eigvals;
       eig_sym(eigvals, VS, covS);
@@ -270,7 +276,7 @@ List pca_updates (arma::mat X,
       //   A = A*RA;
       A = A*RA;
       //   covA = A'*A;
-      arma::mat covA = cov(A, 1);
+      arma::mat covA = A.t()*A;
       //   if ~isempty(Av)
       if (!Av.empty()){
         // Rcout << "adding Av to covA" << std::endl;
@@ -287,6 +293,7 @@ List pca_updates (arma::mat X,
       //     covA = covA / n1;
       //   [VA,DA] = eig(covA);
       // Rcout << "computing eigen decomp of covA" << std::endl;
+      covA = covA / p;
       arma::mat VA;
       arma::vec eigvalsA;
       eig_sym(eigvalsA, VA, covA);
@@ -665,6 +672,27 @@ List pca_updates (arma::mat X,
     //     end
     //     end
     // std::cout << "Mu " <<  << "\n";
+    // Rcout<<"\n A is : " << A(0, 0) << std::endl;
+    Rcout<<"\n A is : " << std::endl;
+    for(int i=0; i < p; ++i) {
+      for(int  j=0; j < ncomp; ++j)
+        Rcout << A(i, j) << " ";
+    }
+    Rcout<<"\n S is : " << std::endl;
+    for(int i=0; i < ncomp; ++i) {
+      for(int  j=0; j < n; ++j)
+        Rcout << S(i, j) << " ";
+    }
+    Rcout<<"\n Mu is : " << std::endl;
+    for(int i=0; i < p; ++i) {
+        Rcout << Mu(i) << " ";
+    }
+    Rcout<<"\n V is : " << std::endl;
+    Rcout << V << std::endl;
+    Rcout<<"\n Muv is : " << std::endl;
+    for(int i=0; i < p; ++i) {
+      Rcout << Muv(i) << " ";
+    }
   }
   // % Finally rotate to the PCA solution
   if (!rotate2pca){
