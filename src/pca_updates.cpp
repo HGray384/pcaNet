@@ -305,6 +305,40 @@ List pca_updates (arma::mat X,
       //   DA = -DA;
       //   VA = VA(:,I);
       //   A = A*VA;
+      arma::uvec I;
+      I = arma::sort_index(-arma::diagvec(DA));
+      // Rcout<<"\n I is : " << std::endl;
+      // for(int j=0; j < ncomp; ++j) {
+      //   Rcout << I(j) << " ";
+      // }
+      arma::vec DAsortvec;
+      DAsortvec = sort(-arma::diagvec(DA));
+      // Rcout<<"\n DAsortvec is : " << std::endl;
+      // for(int j=0; j < ncomp; ++j) {
+      //   Rcout << DAsortvec(j) << " ";
+      // }
+      DA = arma::diagmat(-DAsortvec);
+      // Rcout<<"\n DA is : " << std::endl;
+      // for(int i=0; i < ncomp; ++i) {
+      //   for(int  j=0; j < ncomp; ++j)
+      //     Rcout << DA(i, j) << " ";
+      // }
+      // Rcout<<"\n VA is : " << std::endl;
+      // for(int i=0; i < ncomp; ++i) {
+      //   for(int  j=0; j < ncomp; ++j)
+      //     Rcout << VA(i, j) << " ";
+      // }
+      arma::mat VAsorted = VA;
+      for (int j = 0; j<ncomp; j++){
+        int tmpind = I(j);
+        VAsorted.col(j) = VA.col(tmpind);
+      }
+      // Rcout<<"\n VAsorted is : " << std::endl;
+      // for(int i=0; i < ncomp; ++i) {
+      //   for(int  j=0; j < ncomp; ++j)
+      //     Rcout << VAsorted(i, j) << " ";
+      // }
+      VA = VAsorted;
       A = A*VA;
       //   
       //   if ~isempty(Av)
@@ -694,7 +728,7 @@ List pca_updates (arma::mat X,
       Rcout << Muv(i) << " ";
     }
   }
-  // % Finally rotate to the PCA solution
+  
   if (!rotate2pca){
     //   [ dMu, A, Av, S, Sv ] = RotateToPCA( ...
     //     A, Av, S, Sv, Isv, obscombj, opts.bias );
@@ -702,21 +736,21 @@ List pca_updates (arma::mat X,
       Rcout << "rotating to PCA basis..." << std::endl;
     }
     if (bias){
-    //   mS = mean(S,2);
-    // Rcout << "subtracting mean of S" << std::endl;
-    arma::vec mS = mean(S, 1);
-    // dMu = A*mS;
-    dMu = A*mS;
-    // S = S - repmat(mS,1,n2);
-    S -= repmat(mS, 1, n);
-    // Rcout << "mean subtracted" << std::endl;
-    // else
+      //   mS = mean(S,2);
+      // Rcout << "subtracting mean of S" << std::endl;
+      arma::vec mS = mean(S, 1);
+      // dMu = A*mS;
+      dMu = A*mS;
+      // S = S - repmat(mS,1,n2);
+      S -= repmat(mS, 1, n);
+      // Rcout << "mean subtracted" << std::endl;
+      // else
     }
     //   dMu = 0;
     // end
     //   
     //   covS = S*S';
-    arma::mat covS = arma::cov(S.t(), 1);
+    arma::mat covS = S*S.t();
     // if isempty(Isv)
     if (Isv.empty()){
       // Rcout << "adding Sv to covS" << std::endl;
@@ -738,6 +772,7 @@ List pca_updates (arma::mat X,
     //   %covS = covS / (n2-n1);
     //   [VS,D] = eig(covS);
     // Rcout << "computing eigenvalue decomposition of covS" << std::endl;
+    covS = covS / n;
     arma::mat VS;
     arma::vec eigvals;
     eig_sym(eigvals, VS, covS);
@@ -747,7 +782,7 @@ List pca_updates (arma::mat X,
     //   A = A*RA;
     A = A*RA;
     //   covA = A'*A;
-    arma::mat covA = cov(A, 1);
+    arma::mat covA = A.t()*A;
     //   if ~isempty(Av)
     if (!Av.empty()){
       // Rcout << "adding Av to covA" << std::endl;
@@ -764,6 +799,7 @@ List pca_updates (arma::mat X,
     //     covA = covA / n1;
     //   [VA,DA] = eig(covA);
     // Rcout << "computing eigen decomp of covA" << std::endl;
+    covA = covA / p;
     arma::mat VA;
     arma::vec eigvalsA;
     eig_sym(eigvalsA, VA, covA);
@@ -775,6 +811,40 @@ List pca_updates (arma::mat X,
     //   DA = -DA;
     //   VA = VA(:,I);
     //   A = A*VA;
+    arma::uvec I;
+    I = arma::sort_index(-arma::diagvec(DA));
+    // Rcout<<"\n I is : " << std::endl;
+    // for(int j=0; j < ncomp; ++j) {
+    //   Rcout << I(j) << " ";
+    // }
+    arma::vec DAsortvec;
+    DAsortvec = sort(-arma::diagvec(DA));
+    // Rcout<<"\n DAsortvec is : " << std::endl;
+    // for(int j=0; j < ncomp; ++j) {
+    //   Rcout << DAsortvec(j) << " ";
+    // }
+    DA = arma::diagmat(-DAsortvec);
+    // Rcout<<"\n DA is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < ncomp; ++j)
+    //     Rcout << DA(i, j) << " ";
+    // }
+    // Rcout<<"\n VA is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < ncomp; ++j)
+    //     Rcout << VA(i, j) << " ";
+    // }
+    arma::mat VAsorted = VA;
+    for (int j = 0; j<ncomp; j++){
+      int tmpind = I(j);
+      VAsorted.col(j) = VA.col(tmpind);
+    }
+    // Rcout<<"\n VAsorted is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < ncomp; ++j)
+    //     Rcout << VAsorted(i, j) << " ";
+    // }
+    VA = VAsorted;
     A = A*VA;
     //   
     //   if ~isempty(Av)
