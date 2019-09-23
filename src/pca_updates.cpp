@@ -98,26 +98,52 @@ List pca_updates (arma::mat X,
     // update Mu
     if (bias){
       dMu = sum(errMx,1) / Nobs_i ;
+      // Rcout<<"\n dMu at init is : " << std::endl;
+      // for(int i=0; i < p; ++i){
+      //     Rcout << dMu(i) << " ";
+      // }
       // std::cout << "dMu[0]: " << dMu[0] << "\n";
       // std::cout << "dMu[1]: " << dMu[1] << "\n";
       
       if (!Muv.empty()){
         Muv = V / ( Nobs_i + V/Vmu );
+        // Rcout<<"\n Muv after Muv if is : " << std::endl;
+        // for(int i=0; i < p; ++i){
+        //   Rcout << Muv(i) << " ";
+        // }
         // std::cout << "Muv[0]: "  << Muv[0] << "\n";
         // std::cout << "Muv[1]: "  << Muv[1] << "\n";
         
       }
-      th = 1 / ( 1 + (V/Nobs_i)/Vmu ); 
+      th = 1 / ( 1 + (V/Nobs_i)/Vmu );
+      // Rcout<<"\n th is : " << std::endl;
+      // for(int i=0; i < p; ++i){
+      //   Rcout << th(i) << " ";
+      // }
+  
       //std::cout << "th[0]: "  << th[0] << "\n";
       //std::cout << "th[1]: "  << th[1] << "\n";
       
       Mu_old = Mu;
       Mu = th%( Mu + dMu );
+      // Rcout<<"\n Mu after update is : " << std::endl;
+      // for(int i=0; i < p; ++i){
+      //   Rcout << Mu(i) << " ";
+      // }
       dMu = Mu - Mu_old;
+      // Rcout<<"\n new dMu is : " << std::endl;
+      // for(int i=0; i < p; ++i){
+      //   Rcout << dMu(i) << " ";
+      // }
       Mumat = zer.each_col() + dMu;
+      // Rcout <<"\n Mumat is : " << std::endl;
+      // for(int i=0; i < p; ++i) {
+      //   for(int  j=0; j < n; ++j)
+      //     Rcout << Mumat(i, j) << " ";
+      // }
+      
       // std::cout << "accu(X) : "  << accu(X)  << "\n";
       // std::cout << "X[0,0] - Mu[0] : "  << X(0,0) - Mu[0] << "\n";
-      
       X -= Mumat%M;
       //std::cout << "Mumat%M : "  << Mumat%M  << "\n";
       // std::cout << "X[0,0] : "  << X(0,0)  << "\n";
@@ -125,6 +151,11 @@ List pca_updates (arma::mat X,
       // std::cout << "X[1,0] : "  << X(1,0)  << "\n";
       // std::cout << "accu(X) : "  << accu(X)  << "\n";
       
+      // Rcout <<"\n X (post mu subtract) is : " << std::endl;
+      // for(int i=0; i < p; ++i) {
+      //   for(int  j=0; j < n; ++j)
+      //     Rcout << X(i, j) << " ";
+      // }
     }
     //std::cout << "Mu[0]: "  << Mu[0] << "\n";
     //std::cout << "Mu[1]: "  << Mu[1] << "\n";
@@ -218,11 +249,11 @@ List pca_updates (arma::mat X,
     //   Mu = Mu + dMu;
     // }
     // }
-    Rcout<<"\n S (pre-rotate) is : " << std::endl;
-    for(int i=0; i < ncomp; ++i) {
-      for(int  j=0; j < n; ++j)
-        Rcout << S(i, j) << " ";
-    }
+    // Rcout<<"\n S (pre-rotate) is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << S(i, j) << " ";
+    // }
     if (rotate2pca){
       //   [ dMu, A, Av, S, Sv ] = RotateToPCA( ...
       //     A, Av, S, Sv, Isv, obscombj, opts.bias );
@@ -367,6 +398,8 @@ List pca_updates (arma::mat X,
       }
       if (bias){ 
         // Rcout << "updating Mu" << std::endl;
+        Mumat = zer.each_col() + dMu;
+        X -= Mumat%M;
         Mu = Mu + dMu;
         // end
       }
@@ -419,7 +452,32 @@ List pca_updates (arma::mat X,
     // [rms,errMx] = compute_rms( X, A, S, M, ndata );
     // prms = compute_rms( Xprobe, A, S, Mprobe, nprobe );
     // std::cout << "I update A" << "\n";
+    // Rcout<<"\n X pre-compute_rms is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << X(i, j) << " ";
+    // }
+    // Rcout<<"\n A pre-compute_rms is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   for(int  j=0; j < ncomp; ++j)
+    //     Rcout << A(i, j) << " ";
+    // }
+    // Rcout<<"\n S pre-compute rms is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << S(i, j) << " ";
+    // }
+    // Rcout<<"\n M pre-compute_rms is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << M(i, j) << " ";
+    // }
     errMx = (X - A*S)%M;
+    // Rcout<<"\n errMx is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << errMx(i, j) << " ";
+    // }
     rms = pow(accu(errMx%errMx)/ndata, 0.5);
     // std::cout << accu(errMx) << "\n";
     // std::cout << "rms: "  << rms << "\n";
@@ -445,13 +503,18 @@ List pca_updates (arma::mat X,
         }
       }
     }
+    // Rcout << "sXv after big loop is" << sXv << "\n";
     // std::cout << "I update sXv" << "\n";
     if (!Muv.empty()){
       sXv = sXv + accu(Muv(IX));
     }
+    // Rcout << "sXv after Muv 'if' is" << sXv << "\n";
     // std::cout << "I update Muv after sXv" << "\n";
+    // Rcout << "rms before power raise is" << rms << "\n";
     sXv = sXv + (pow(rms,2.0))*ndata;
+    // Rcout << "sXv after power raise is" << sXv << "\n";
     sXv = as_scalar(sXv);
+    // Rcout << "sXv after scalar change is" << sXv << "\n";
     // std::cout << "sXv=" << sXv << "\n";
     //%V = rms^2 + V/ndata; 
     V = ( as_scalar(sXv) + 2*hpV ) / (ndata + 2*hpV);
@@ -707,26 +770,26 @@ List pca_updates (arma::mat X,
     //     end
     // std::cout << "Mu " <<  << "\n";
     // Rcout<<"\n A is : " << A(0, 0) << std::endl;
-    Rcout<<"\n A is : " << std::endl;
-    for(int i=0; i < p; ++i) {
-      for(int  j=0; j < ncomp; ++j)
-        Rcout << A(i, j) << " ";
-    }
-    Rcout<<"\n S is : " << std::endl;
-    for(int i=0; i < ncomp; ++i) {
-      for(int  j=0; j < n; ++j)
-        Rcout << S(i, j) << " ";
-    }
-    Rcout<<"\n Mu is : " << std::endl;
-    for(int i=0; i < p; ++i) {
-        Rcout << Mu(i) << " ";
-    }
-    Rcout<<"\n V is : " << std::endl;
-    Rcout << V << std::endl;
-    Rcout<<"\n Muv is : " << std::endl;
-    for(int i=0; i < p; ++i) {
-      Rcout << Muv(i) << " ";
-    }
+    // Rcout<<"\n A is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   for(int  j=0; j < ncomp; ++j)
+    //     Rcout << A(i, j) << " ";
+    // }
+    // Rcout<<"\n S is : " << std::endl;
+    // for(int i=0; i < ncomp; ++i) {
+    //   for(int  j=0; j < n; ++j)
+    //     Rcout << S(i, j) << " ";
+    // }
+    // Rcout<<"\n Mu is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //     Rcout << Mu(i) << " ";
+    // }
+    // Rcout<<"\n V is : " << std::endl;
+    // Rcout << V << std::endl;
+    // Rcout<<"\n Muv is : " << std::endl;
+    // for(int i=0; i < p; ++i) {
+    //   Rcout << Muv(i) << " ";
+    // }
   }
   
   if (!rotate2pca){

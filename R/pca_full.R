@@ -76,8 +76,8 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
   myCondNum <- 1000
   numOuterIts <- 1
   
-  while(myCondNum >= 1000 && numOuterIts < 5)
-  {
+  # while(myCondNum >= 1000 && numOuterIts < 6)
+  # {
     X <- savedX
     ncomp <- savedncomp
     algorithm <- savedalgorithm
@@ -250,20 +250,24 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
       rotate2pca <- 0 # C++ false
     }
     
-    print('A init is \n')
-    print(A)
-    print('S init is \n')
-    print(S)
-    print('Mu init is \n')
-    print(Mu)
-    print('V init is \n')
-    print(V)
-    print('Av init is \n')
-    print(Av)
-    print('Sv init is \n')
-    print(Sv)
-    print('Muv init is \n')
-    print(Muv)
+    # print('A init is \n')
+    # print(A)
+    # print('S init is \n')
+    # print(S)
+    # print('Mu init is \n')
+    # print(Mu)
+    # print('V init is \n')
+    # print(V)
+    # print('Av init is \n')
+    # print(Av)
+    # print('Sv init is \n')
+    # print(Sv)
+    # print('Muv init is \n')
+    # print(Muv)
+    # print('errMx init is \n')
+    # print(errMx)
+    # print('rms init is \n')
+    # print(rms)
     
     ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
                               Mu = Mu, Muv = Muv, Vmu = Vmu,
@@ -364,10 +368,10 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     
     myCondNum   <- kappa(ppcaOutput$C, exact = TRUE)
     numOuterIts <- numOuterIts + 1
-  }
-  if (numOuterIts==6){
-    warning("PPCA did not find a good solution after 5 runs.")
-  }
+  # }
+  # if (numOuterIts==6){
+  #   warning("PPCA did not find a good solution after 5 runs.")
+  # }
   return(output)
 }
 
