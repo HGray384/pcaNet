@@ -330,12 +330,12 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     pcaMethodsRes@completeObs <- completeObs
     
     # create hinton diagram
-    # if(verbose){
-    #   plotrix::color2D.matplot(ppcaOutput$W,
-    #                            extremes=c("black","white"),
-    #                            main="Hinton diagram of loadings",
-    #                            Hinton=TRUE)
-    # }
+    if(verbose){
+      plotrix::color2D.matplot(ppcaOutput$W,
+                               extremes=c("black","white"),
+                               main="Hinton diagram of loadings",
+                               Hinton=TRUE)
+    }
     # back to R boolean
     if(verbose==1){
       verbose <- TRUE # C++ true
@@ -384,15 +384,15 @@ initParms <- function(p, n, ncomp, verbose=TRUE)
   if(verbose) {
     cat("Initialising parameters... \n")
   }
-  # randNumMatrix <- matrix(rnorm(p*ncomp), nrow = p, ncol = ncomp) 
-  # qrDecomp      <- qr(randNumMatrix)
+  randNumMatrix <- matrix(rnorm(p*ncomp), nrow = p, ncol = ncomp)
+  qrDecomp      <- qr(randNumMatrix)
   # if ncomp > p then need to take R instead of Q
-  # if (ncomp < p) {
-  #   A             <- qr.Q(qrDecomp)
-  # } else {
-  #   A             <- qr.R(qrDecomp)
-  # }
-  A <- matrix(1, nrow = p, ncol = ncomp)
+  if (ncomp < p) {
+    A             <- qr.Q(qrDecomp)
+  } else {
+    A             <- qr.R(qrDecomp)
+  }
+  # A <- matrix(1, nrow = p, ncol = ncomp)
   
   Av <- lapply(1:p, function(x){diag(ncomp)})
   Av <- simplify2array(Av)
@@ -405,8 +405,8 @@ initParms <- function(p, n, ncomp, verbose=TRUE)
   V <- 1
   
   # S = X
-  # S  <- matrix(rnorm(ncomp*n), nrow = ncomp, ncol = n)
-  S  <- matrix(1, nrow = ncomp, ncol = n)
+  S  <- matrix(rnorm(ncomp*n), nrow = ncomp, ncol = n)
+  # S  <- matrix(1, nrow = ncomp, ncol = n)
   Sv <- lapply(1:n, function(x){diag(ncomp)})
   Sv <- simplify2array(Sv)
   return(list(A = A, S = S, Mu = Mu, V = V, Av = Av, Sv = Sv, Muv = Muv))

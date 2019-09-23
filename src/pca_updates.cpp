@@ -717,7 +717,7 @@ List pca_updates (arma::mat X,
     if (iter > rmsStopNumIter){
       rms1 = lcrms(iter-rmsStopNumIter);
       rms2 = lcrms(iter);
-      if(fabs(rms2-rms1) < 1e-4)
+      if(fabs(rms2-rms1) < 1e-6)
       {
         if (verbose){
           Rcout << "Stop: RMS has not changed much for 100 iterations." << std::endl;
