@@ -1,5 +1,5 @@
 #' Implements a probabilistic PCA missing value estimator, as in pcaMethods.
-#'   Use of Rcpp makes this version faster (cite software note) and 
+#'   Use of Rcpp makes this version faster and 
 #'   the emphasised output is the covariance matrix \code{Sigma}, which 
 #'   can be used for network reconstruction.
 #' 
@@ -26,7 +26,10 @@
 #'   falls below this then the algorithm is stopped.
 #' @param maxIterations  \code{numeric} -- Maximum number of estimation
 #'   steps. 
-#' @param ... 
+#' @param loglike \code{logical} -- should the log-likelihood
+#'   of the estimated parameters be returned? See Details.
+#' @param verbose \code{logical} -- verbose intermediary 
+#'   algorithm output.
 #'
 #' @return {A \code{list} of 4 elements:
 #' \describe{
@@ -34,7 +37,7 @@
 #' \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
 #' \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
 #' \item{pcaMethodsRes}{\code{class} -- 
-#'   see \code{\link[pcaRes-class]{pcaRes}}.}
+#'   see \code{\link[pcaMethods:pcaRes-class]{pcaRes}}.}
 #' }}
 #' @export
 #'
@@ -92,7 +95,7 @@
 #' # covariance estimation
 #' norm(pp$Sigma-Sigma, type="F")^2/(length(X))
 ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
-                   loglike = TRUE, verbose=TRUE, ...) {
+                   loglike = TRUE, verbose=TRUE) {
 
   if (!is.na(seed)) 
     set.seed(seed)

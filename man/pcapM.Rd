@@ -7,7 +7,7 @@
 pcapM(myMat, nPcs = 2, method = "ppca", seed = NA,
   threshold = 1e-04, maxIterations = 1000, center = TRUE,
   scale = c("none", "pareto", "vector", "uv"), loglike = TRUE,
-  verbose = TRUE, ...)
+  verbose = TRUE)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Data matrix with 
@@ -42,8 +42,6 @@ of the estimated parameters be returned? See Details.}
 
 \item{verbose}{\code{logical} -- verbose intermediary 
 algorithm output.}
-
-\item{...}{}
 }
 \value{
 {A \code{list} of 5 or 7 elements, depending on the value
@@ -73,5 +71,4 @@ See \code{\link{ppcapM}} and \code{\link{bpcapM}} for
   the algorithm specifics. \code{loglike} indicates whether 
   log-likelihood values for the resulting estimates should 
   be computed. This can be useful to compare different algorithms.
-  .
 }

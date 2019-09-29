@@ -13,22 +13,22 @@
 The DESCRIPTION file:
 \packageDESCRIPTION{pcaNet}
 \packageIndices{pcaNet}
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+An overview of how to use the package, including the most important
+functions
 }
 \author{
 \packageAuthor{pcaNet}
 
-Maintainer: \packageMaintainer{pcaNet}
+Maintainers: \packageMaintainer{pcaNet}
 }
 \references{
-~~ Literature or other references for background information ~~
+Oba, S., Sato, M.A., Takemasa, I., Monden, M.,
+Matsubara, K.I. and Ishii, S., 2003. \href{https://doi.org/10.1093/bioinformatics/btg287}{doi}.
+
+Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+Selbig, J., 2007. \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
 }
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-
+\code{\link[pcaMethods:pcaMethods-package]{pcaMethods}}
 }

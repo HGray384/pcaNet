@@ -5,7 +5,7 @@
 \title{Probabilistic PCA (pcaMethods version)}
 \usage{
 ppcapM(myMat, nPcs = 2, seed = NA, threshold = 1e-04,
-  maxIterations = 1000, loglike = TRUE, verbose = TRUE, ...)
+  maxIterations = 1000, loglike = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Pre-processed matrix (centered,
@@ -26,7 +26,11 @@ falls below this then the algorithm is stopped.}
 \item{maxIterations}{\code{numeric} -- Maximum number of estimation
 steps.}
 
-\item{...}{}
+\item{loglike}{\code{logical} -- should the log-likelihood
+of the estimated parameters be returned? See Details.}
+
+\item{verbose}{\code{logical} -- verbose intermediary 
+algorithm output.}
 }
 \value{
 {A \code{list} of 4 elements:
@@ -35,12 +39,12 @@ steps.}
 \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
 \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
 \item{pcaMethodsRes}{\code{class} -- 
-  see \code{\link[pcaRes-class]{pcaRes}}.}
+  see \code{\link[pcaMethods:pcaRes-class]{pcaRes}}.}
 }}
 }
 \description{
 Implements a probabilistic PCA missing value estimator, as in pcaMethods.
-  Use of Rcpp makes this version faster (cite software note) and 
+  Use of Rcpp makes this version faster and 
   the emphasised output is the covariance matrix \code{Sigma}, which 
   can be used for network reconstruction.
 }

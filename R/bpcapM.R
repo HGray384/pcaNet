@@ -1,5 +1,5 @@
 #' Implements a Bayesian PCA missing value estimator, as in pcaMethods.
-#'   Use of Rcpp makes this version faster (cite software note) and 
+#'   Use of Rcpp makes this version faster and 
 #'   the emphasised output is the covariance matrix \code{Sigma}, which 
 #'   can be used for network reconstruction.
 #' 
@@ -11,7 +11,7 @@
 #' either the maximum number of iterations is reached or if the
 #' estimated increase in precision falls below \eqn{1e^{-4}}{1e^-4}.
 #' 
-#' @title Bayesian PCA (pcaMethods version)
+#' @title Bayesian PCA (\code{pcaMethods} version)
 #'
 #' @param myMat \code{matrix} -- Pre-processed matrix (centered,
 #'   scaled) with variables in columns and observations in rows. The
@@ -24,7 +24,10 @@
 #'   falls below this then the algorithm is stopped.
 #' @param maxIterations  \code{numeric} -- Maximum number of estimation
 #'   steps. 
-#' @param ... 
+#' @param loglike \code{logical} -- should the log-likelihood
+#'   of the estimated parameters be returned? See Details.
+#' @param verbose \code{logical} -- verbose intermediary 
+#'   algorithm output.
 #'
 #' @return {A \code{list} of 4 elements:
 #' \describe{
@@ -32,9 +35,19 @@
 #' \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
 #' \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
 #' \item{pcaMethodsRes}{\code{class} -- 
-#'   see \code{\link[pcaRes-class]{pcaRes}}.}
+#'   see \code{\link[pcaMethods:pcaRes-class]{pcaRes}}.}
 #' }}
 #' @export
+#' 
+#' @references Oba, S., Sato, M.A., Takemasa, I., Monden, M.,
+#'  Matsubara, K.I. and Ishii, S., 2003.
+#'  \href{https://doi.org/10.1093/bioinformatics/btg287}{doi}.
+#'  
+#'  Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+#'  Selbig, J., 2007.
+#'  \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
+#'
+#' @seealso \code{\link{pcapM}}
 #'
 #' @examples
 #' # simulate a dataset from a zero mean factor model X = Wz + epsilon
@@ -90,7 +103,7 @@
 #' # covariance estimation
 #' norm(bp$Sigma-Sigma, type="F")^2/(length(X))
 bpcapM <- function(myMat, nPcs=NA, threshold=1e-4, maxIterations=100,
-                   loglike = TRUE ,verbose=TRUE, ...) {
+                   loglike = TRUE ,verbose=TRUE) {
 
   N <- nrow(myMat)
   D <- ncol(myMat)

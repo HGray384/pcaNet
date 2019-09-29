@@ -34,18 +34,20 @@
 #'   from which the magnitude and significance of each partial 
 #'   correlation can be seen (and customised thresholding can be
 #'   performed). The \code{graph} element of the output is an
-#'   \linkS4class{igraph} object, and so can be used to easily
-#'   make alternative visualisations or compute graph statistics.
+#'   \sQuote{\code{igraph}} class, and so can be used 
+#'   to easily make alternative visualisations or compute graph statistics.
 #'
 #' @return {A \code{list} of 2 elements:
 #' \describe{
-#' \item{graph}{\linkS4class{igraph} -- Contains the network 
+#' \item{graph}{\sQuote{\code{igraph}} -- Contains the network 
 #' information.}
 #' \item{fdr.stats}{\code{list} -- the full output of an internal call
 #' to \code{\link[fdrtool:fdrtool]{fdrtool}}. Can be useful to inspect
 #' the statistics upon which the network was reconstructed.}
 #' }}
 #' @export
+#' 
+#' @seealso \code{\link{igraph}}, \code{\link{fdrtool}}
 #'
 #' @examples
 ppca2Net <- function(ppcaOutput, plot=TRUE, verbose=TRUE, vertex.size = 10, 

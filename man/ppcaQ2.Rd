@@ -10,6 +10,9 @@ ppcaQ2(obj, originalData = pcaMethods::completeObs(obj$pcaMethodsRes),
   variables = 1:(pcaMethods::nVar(obj$pcaMethodsRes)), ...)
 }
 \arguments{
+\item{obj}{A \code{pcaRes} object (result from previous PCA
+analysis.)}
+
 \item{originalData}{The matrix (or ExpressionSet) that used to
 obtain the pcaRes object.}
 
@@ -29,9 +32,6 @@ and do not contribute to the total sum-of-squares.}
 
 \item{...}{Further arguments passed to the \code{\link{pca}} function called
 within Q2.}
-
-\item{object}{A \code{pcaRes} object (result from previous PCA
-analysis.)}
 }
 \value{
 A matrix or vector with \eqn{Q^2} estimates.
@@ -75,12 +75,14 @@ data(iris)
 x <- iris[,1:4]
 pcIr <- pcaMethods::pca(x, nPcs=3)
 q2 <- pcaMethods::Q2(pcIr, x)
-barplot(q2, main="Krzanowski CV", xlab="Number of PCs", ylab=expression(Q^2))
+barplot(q2, main="Krzanowski CV", xlab="Number of PCs",
+ ylab=expression(Q^2))
 ## q2 for a single variable
 pcaMethods::Q2(pcIr, x, variables=2)
 pcIr <- pcaMethods::pca(x, nPcs=3, method="nipals")
 q2 <- pcaMethods::Q2(pcIr, x, type="impute")
-barplot(q2, main="Imputation CV", xlab="Number of PCs", ylab=expression(Q^2))
+barplot(q2, main="Imputation CV", xlab="Number of PCs",
+ ylab=expression(Q^2))
 }
 \references{
 Krzanowski, WJ. Cross-validation in principal

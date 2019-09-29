@@ -136,13 +136,13 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
     if (any(is.na(X))){
       X[which(is.na(X))] <- NaN
     }
-    M = !is.nan(X)
+    M <- !is.nan(X)
     
     myMatsaved   <- X
     X[X==0]      <- .Machine$double.eps
     X[is.nan(X)] <- 0
     
-    Nobs_i = rowSums(M)
+    Nobs_i <- rowSums(M)
     
     
     notmiss <- which(X!=0, arr.ind = TRUE)

@@ -2,10 +2,10 @@
 % Please edit documentation in R/bpcapM.R
 \name{bpcapM}
 \alias{bpcapM}
-\title{Bayesian PCA (pcaMethods version)}
+\title{Bayesian PCA (\code{pcaMethods} version)}
 \usage{
 bpcapM(myMat, nPcs = NA, threshold = 1e-04, maxIterations = 100,
-  loglike = TRUE, verbose = TRUE, ...)
+  loglike = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Pre-processed matrix (centered,
@@ -23,7 +23,11 @@ falls below this then the algorithm is stopped.}
 \item{maxIterations}{\code{numeric} -- Maximum number of estimation
 steps.}
 
-\item{...}{}
+\item{loglike}{\code{logical} -- should the log-likelihood
+of the estimated parameters be returned? See Details.}
+
+\item{verbose}{\code{logical} -- verbose intermediary 
+algorithm output.}
 }
 \value{
 {A \code{list} of 4 elements:
@@ -32,12 +36,12 @@ steps.}
 \item{sigmaSq}{\code{numeric} -- the estimated isotropic variance.}
 \item{Sigma}{\code{matrix} -- the estimated covariance matrix.}
 \item{pcaMethodsRes}{\code{class} -- 
-  see \code{\link[pcaRes-class]{pcaRes}}.}
+  see \code{\link[pcaMethods:pcaRes-class]{pcaRes}}.}
 }}
 }
 \description{
 Implements a Bayesian PCA missing value estimator, as in pcaMethods.
-  Use of Rcpp makes this version faster (cite software note) and 
+  Use of Rcpp makes this version faster and 
   the emphasised output is the covariance matrix \code{Sigma}, which 
   can be used for network reconstruction.
 }
@@ -103,4 +107,16 @@ norm(recon.X-X, type="F")^2/(length(X))
 
 # covariance estimation
 norm(bp$Sigma-Sigma, type="F")^2/(length(X))
+}
+\references{
+Oba, S., Sato, M.A., Takemasa, I., Monden, M.,
+ Matsubara, K.I. and Ishii, S., 2003.
+ \href{https://doi.org/10.1093/bioinformatics/btg287}{doi}.
+ 
+ Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+ Selbig, J., 2007.
+ \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
+}
+\seealso{
+\code{\link{pcapM}}
 }

@@ -29,13 +29,11 @@
 #'   of the estimated parameters be returned? See Details.
 #' @param verbose \code{logical} -- verbose intermediary 
 #'   algorithm output.
-#' @param ... 
 #' 
 #' @details See \code{\link{ppcapM}} and \code{\link{bpcapM}} for 
 #'   the algorithm specifics. \code{loglike} indicates whether 
 #'   log-likelihood values for the resulting estimates should 
 #'   be computed. This can be useful to compare different algorithms.
-#'   . 
 #'
 #' @return {A \code{list} of 5 or 7 elements, depending on the value
 #' of \code{loglike}:
@@ -57,7 +55,7 @@
 pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
                   maxIterations=1000, center = TRUE, 
                   scale = c("none", "pareto", "vector", "uv"), 
-                  loglike = TRUE, verbose=TRUE, ...) {
+                  loglike = TRUE, verbose=TRUE) {
   ## preprocessing
   if (nPcs > ncol(myMat)) {
     warning("more components than matrix columns requested")
@@ -110,11 +108,11 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
   if (method=="ppca"){
     res <- ppcapM(myMat, nPcs=nPcs, seed=seed, threshold=threshold,
                   maxIterations=maxIterations, loglike = loglike, 
-                  verbose=verbose, ...)
+                  verbose=verbose)
   } else if (method=="bpca"){
     res <- bpcapM(myMat, nPcs=nPcs, threshold=threshold,
                   maxIterations=maxIterations, loglike = loglike, 
-                  verbose=verbose, ...)
+                  verbose=verbose)
   } else {
     stop("The specified method must be either 'ppca' or 'bpca'")
   }

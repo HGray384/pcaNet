@@ -1,7 +1,141 @@
 # include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp ;
-
+//' PPCA updates
+//' 
+//' Perform the parameter updates for PPCA using either Expectation-
+//' Maximisation or Variational Bayes as in Ilin and Raiko (2010).
+//' Recommended to not use standalone, rather this function is called
+//' within \code{pca_full}.
+//' 
+//' @param X \code{matrix} -- data matrix with variables in rows and 
+//' observations in columns.
+//' @param V \code{numeric} -- scalar value corresponding to the
+//' initialised variance of the error parameter.
+//' @param A \code{matrix} -- initialised loadings matrix with observed
+//' variables in rows and latent variables in columns
+//' @param Av \code{array} -- initialised covariance matrices of the rows of
+//' \code{A}.
+//' @param Va \code{numeric} -- the hyperparameter of the prior variance of
+//' the rows of \code{A}.
+//' @param S \code{matrix} -- initialised factor scores matrix with latent
+//' variables in rows and observations in columns.
+//' @param Sv \code{array} -- initialised covariance matrices of the rows of 
+//' \code{S}.
+//' @param Mu \code{numeric} -- vector corresponding to the initialised mean 
+//' of the observed variables.
+//' @param Muv \code{numeric} -- the initialisation of the prior variance
+//' of \code{Mu}.
+//' @param Vmu \code{numeric} -- the hyperparameter of the prior variance 
+//' of \code{Mu}
+//' @param hpVa \code{numeric} -- hyperparameter for the prior of the variance
+//' of \code{Vmu} and \code{Va}.
+//' @param hpVb \code{numeric} -- hyperparameter for the prior of the variance
+//' of \code{Vmu} and \code{Va}.
+//' @param hpV \code{numeric} -- hyperparameter for the prior of
+//' V.
+//' @param ndata \code{numeric} -- number of observed values.
+//' @param Nobs_i \code{numeric} -- number of observed values in each row
+//' of the data.
+//' @param Isv \code{numeric} -- indices j for Sv{j} that are identical. Not
+//' currently used.
+//' @param M \code{matrix} -- logical values indicating which elements of the
+//' data are observed and missing.
+//' @param IX \code{numeric} -- row indices of missing values
+//' @param JX \code{numeric} -- column indices of missing values
+//' @param rms \code{numeric} -- scalar indicating the initial rms
+//' @param errMx \code{matrix} -- initial error matrix whose elements
+//' correspond to difference between the observed data and its model 
+//' prediction.
+//' @param bias \code{logical} -- value indicating whether the mean
+//' vector should be estimated or not.
+//' @param rotate2pca \code{logical} -- value indicating whether to rotate
+//' the pca solution during learning.
+//' @param niter_broadprior \code{numeric} -- number of iterations before
+//' the prior parameters begin to be updated. 
+//' @param use_prior \code{logical} -- whether or not a prior is assumed
+//' for the model parameters.
+//' @param use_postvar \code{logical} -- whether the posterior variance
+//' should be computed and taken into account.
+//' @param maxiters \code{numeric} -- the maximum number of iterations to 
+//' be completed.
+//' @param verbose \code{logical} -- whether extra output, such as the
+//' iteration number and cost function value, should be displayed.
+//' 
+//' @return {A \code{list} of 6 elements:
+//' \describe{
+//' \item{scores}{\code{matrix} -- the estimated scores.}
+//' \item{m}{\code{numeric} -- the estimated mean vector.}
+//' \item{ss}{\code{numeric} -- the estimated model variance.}
+//' \item{W}{\code{matrix} -- the estimated loadings.}
+//' \item{C}{\code{matrix} -- the estimated covariance matrix.}
+//' \item{numIter}{\code{numeric} -- the number of iterations.}
+//' }}
+//' @seealso \code{\link{pca_full}}
+//' @examples
+//'   set.seed(102)
+//'   n <- 20
+//'   p <- 20
+//'   verbose <- 1
+//'   bias <- 1
+//'   rotate2pca <- 1
+//'   ncomp <- 2
+//'   maxiters <- 1000
+//'   opts <- list(init='random',
+//'     maxiters=as.numeric(1000),
+//'     niter_broadprior=as.numeric(100),
+//'     earlystop=as.numeric(0)
+//'   )
+//'   use_prior = 1
+//'   use_postvar = 1
+//'   X <- matrix(rnorm(50), p, n)
+//'   X <- t(scale(t(X), center=TRUE, scale=FALSE)) # mean 0
+//'   IX <- sample(1:p, 10)
+//'   JX <- sample(1:n, 10)
+//'   X[IX, JX] <- 0
+//'   M <- X!=0
+//'   Nobs_i = rowSums(M)
+//'   ndata   <- length(IX)
+//'   # C++ indexing
+//'   IX <- IX -1 
+//'   JX <- JX -1
+//'   
+//'   initialisedParms <- initParms(p, n, ncomp, verbose = verbose)
+//'   A   <- initialisedParms$A
+//'   S   <- initialisedParms$S
+//'   Mu  <- initialisedParms$Mu
+//'   V   <- initialisedParms$V
+//'   Av  <- initialisedParms$Av
+//'   Sv  <- initialisedParms$Sv
+//'   Muv <- initialisedParms$Muv
+//'   Va  <- 1000*rep(1,ncomp)
+//'   Vmu <- 1000
+//'   if (is.null(Mu)){
+//'     if (bias){
+//'       Mu <- rowSums(X) / Nobs_i
+//'   }else{
+//'     Mu = rep(0, p)
+//'     }
+//'   }
+//'   computedRMS <- compute_rms(X, A, S, M, ndata, verbose = verbose)
+//'   errMx       <- computedRMS$errMx
+//'   rms         <- computedRMS$rms
+//'   hpVa <- 0.001
+//'   hpVb <- 0.001
+//'   hpV  <- 0.001
+//'   Isv <- rep(0, 2)
+//'   # data centering
+//'   X <- subtractMu(Mu, X, M, p, n, bias, verbose = verbose) 
+//'   ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
+//'   Mu = Mu, Muv = Muv, Vmu = Vmu,
+//'   hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i,
+//'   Isv = Isv, M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, 
+//'   bias = bias, rotate2pca = rotate2pca, niter_broadprior = opts$niter_broadprior, 
+//'   use_prior = use_prior, use_postvar = use_postvar,
+//'   maxiters = maxiters, verbose = verbose)
+//'   
+//' @references Ilin, A. and Raiko, T., 2010.
+//' \href{http://www.jmlr.org/papers/v11/ilin10a.html}{link}.
 // [[Rcpp::export()]]
 List pca_updates (arma::mat X,
                   double V,
