@@ -50,7 +50,7 @@ Implements a probabilistic PCA missing value estimator, as in pcaMethods.
 }
 \details{
 Details about the probabilistic model underlying PPCA are found in
-Bishop 1999. The algorithm (Verbeek, 20??) uses an expectation maximation
+Bishop 1999. The algorithm (Porta, 2005) uses an expectation maximisation
 approach together with a probabilistic model to approximate the
 principal axes (eigenvectors of the covariance matrix in PCA).
 The estimation is done iteratively, the algorithm terminates if
@@ -110,4 +110,11 @@ norm(recon.X-X, type="F")^2/(length(X))
 
 # covariance estimation
 norm(pp$Sigma-Sigma, type="F")^2/(length(X))
+}
+\references{
+Porta, J.M., Verbeek, J.J. and Kroese, B.J., 2005.
+ \href{https://hal.inria.fr/inria-00321476/en}{link}
+
+ Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+ Selbig, J., 2007. \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
 }

@@ -3,14 +3,59 @@
 
 using namespace Rcpp ;
 
-
 arma::mat mrdivide(arma::mat A, arma::mat B)
 {
-    return (solve(B.t(), A.t(), arma::solve_opts::fast )).t();
+  return (solve(B.t(), A.t(), arma::solve_opts::fast )).t();
 }
 
+//' Probabilistic PCA updates
+//' 
+//' Perform parameter updates for PPCA using the Expectation-Maximisation framework
+//' from Porta (2005) and also in the R-package \code{\link{pcaMethods}} (Stacklies, 2007).
+//' Not recommended to use standalone, rather it is called from within
+//' \code{\link{bpcapM}} and its wrapper \code{\link{pcapM}}.
+//' 
+//' @param myMat \code{matrix} -- data matrix with observations in rows and 
+//' variables in columns. (Note that this is the transpose of \code{X} in
+//' \code{\link{pca_full}}.)
+//' @param N \code{numeric} -- the number of observations.
+//' @param D \code{numeric} -- the number of variables.
+//' @param W \code{matrix} -- initialised loadings matrix with observed
+//' variables in rows and latent variables in columns.
+//' @param hidden \code{numeric} -- indices of missing values in \code{1:length(myMat)}.
+//' @param nMissing \code{numeric} -- total number of missing values.
+//' @param nPcs \code{numeric} -- number of components/latent variables to use.
+//' @param threshold \code{numeric} -- threshold for convergence, applied to the precision
+//' parameter \code{tau}. Updates for which the change in \code{tau} are below this threshold
+//' value stop the algorithm.
+//' @param maxIterations \code{numeric} -- the maximum number of iterations to be completed.
+//' 
+//' @return {A \code{list} of 6 elements:
+//' \describe{
+//' \item{W}{\code{matrix} -- the estimated loadings.}
+//' \item{ss}{\code{numeric} -- the estimated model variance.}
+//' \item{C}{\code{matrix} -- the estimated covariance matrix.}
+//' \item{myMat}{\code{matrix} -- the data matrix with missing values
+//' replaced by their estimated projections.}
+//' }}
+//' @seealso \code{\link{ppcapM}}, \code{\link{pcapM}}
+//' 
+//' @references Porta, J.M., Verbeek, J.J. and Kroese, B.J., 2005.
+//'  \href{https://hal.inria.fr/inria-00321476/en}{link}
+//'  
+//'  Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+//'  Selbig, J., 2007. \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
+//' 
 // [[Rcpp::export()]]
-List ppcaNet (arma::mat myMat, int N, int D, arma::mat W, arma::uvec hidden, int nMissing, int nPcs=2, double threshold=1e-5, int maxIterations=1000) {
+List ppcaNet (arma::mat myMat,
+              int N,
+              int D,
+              arma::mat W,
+              arma::uvec hidden,
+              int nMissing,
+              int nPcs=2,
+              double threshold=1e-5,
+              int maxIterations=1000) {
   
   double ss, ss_old, rel_ch, objective;
   arma::mat    WtW(nPcs, nPcs);

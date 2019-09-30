@@ -3,8 +3,83 @@
 
 using namespace Rcpp ;
 
+//' Bayesian PCA updates
+//' 
+//' Perform parameter updates for PPCA using the Variational Bayes framework
+//' from Oba (2003). Not recommended to use standalone, rather it is called from within
+//' \code{\link{bpcapM}} and its wrapper \code{\link{pcapM}}.
+//' 
+//' @param myMat \code{matrix} -- data matrix with observations in rows and 
+//' variables in columns. (Note that this is the transpose of \code{X} in
+//' \code{\link{pca_full}}.)
+//' @param covy \code{matrix} -- the unbiased sample covariance of the data matrix.
+//' @param N \code{numeric} -- the number of observations.
+//' @param D \code{numeric} -- the number of variables.
+//' @param hidden \code{numeric} -- indices of missing values in \code{1:length(myMat)}.
+//' @param numberOfNonNAvaluesInEachCol \code{numeric} -- number of observed values in each 
+//' column of the data (i.e. variables).
+//' @param nomissIndex \code{numeric} -- indices of rows (observations) without any
+//' missing values.
+//' @param missIndex \code{numeric} -- indices of rows (observations) with missing
+//' values.
+//' @param nMissing \code{numeric} -- total number of missing values.
+//' @param nPcs \code{numeric} -- number of components/latent variables to use.
+//' @param threshold \code{numeric} -- threshold for convergence, applied to the precision
+//' parameter \code{tau}. Updates for which the change in \code{tau} are below this threshold
+//' value stop the algorithm.
+//' @param maxIterations \code{numeric} -- the maximum number of iterations to be completed.
+//' @return {A \code{list} of 6 elements:
+//' \describe{
+//' \item{W}{\code{matrix} -- the estimated loadings.}
+//' \item{ss}{\code{numeric} -- the estimated model variance.}
+//' \item{C}{\code{matrix} -- the estimated covariance matrix.}
+//' \item{scores}{\code{matrix} -- the estimated scores.}
+//' \item{m}{\code{numeric} -- the estimated mean vector.}
+//' }}
+//' @seealso \code{\link{bpcapM}}, \code{\link{pcapM}}
+//' @examples
+//' set.seed(102)
+//'   N <- 20
+//'   D <- 20
+//'   nPcs <- 2
+//'   maxIterations <- 1000
+//'   X <- matrix(rnorm(50), D, N)
+//'   X <- scale(X, center=TRUE, scale=FALSE) # mean 0
+//'   covX <- cov(X)
+//'   IX <- sample(1:D, 10)
+//'   JX <- sample(1:N, 10)
+//'   nMissing <- length(IX)+length(JX)
+//'   X[JX, IX] <- 0
+//'   hidden <- which(X==0)
+//'   numberOfNonNAvaluesInEachCol <- colSums(X!=0)
+//'   nomissIndex <- which(rowSums(X!=0)==N)
+//'   missIndex <- which(rowSums(X!=0)!=N)
+//'   threshold <- 1e-4
+//'   maxIterations <- 1000
+//'   bpcaNetOutput <- bpcaNet(myMat=X, covy=covX, N=N, D=D, hidden=hidden,
+//'     numberOfNonNAvaluesInEachCol=numberOfNonNAvaluesInEachCol,
+//'     nomissIndex=nomissIndex, missIndex=missIndex, nMissing=nMissing,
+//'     nPcs=nPcs, threshold=threshold, maxIterations=maxIterations)
+//' @references Oba, S., Sato, M.A., Takemasa, I., Monden, M.,
+//'  Matsubara, K.I. and Ishii, S., 2003.
+//'  \href{https://doi.org/10.1093/bioinformatics/btg287}{doi}.
+//'  
+//'  Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+//'  Selbig, J., 2007.
+//'  \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
 // [[Rcpp::export()]]
-List bpcaNet (arma::mat myMat, arma::mat covy, int N, int D, arma::uvec hidden, arma::uvec numberOfNonNAvaluesInEachCol, arma::uvec nomissIndex, arma::uvec missIndex, int nMissing, int nPcs=2, double threshold=1e-4, int maxIterations=200) {
+List bpcaNet (arma::mat myMat,
+              arma::mat covy,
+              int N,
+              int D,
+              arma::uvec hidden,
+              arma::uvec numberOfNonNAvaluesInEachCol,
+              arma::uvec nomissIndex,
+              arma::uvec missIndex,
+              int nMissing,
+              int nPcs=2,
+              double threshold=1e-4,
+              int maxIterations=200) {
   
   //double ss, ss_old, rel_ch, objective, TSS;
   

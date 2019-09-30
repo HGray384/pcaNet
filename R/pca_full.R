@@ -377,8 +377,40 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
 
 
 
-# Initialise model parameters:
-# ============================
+#' @title Initialise model parameters for \code{\link{pca_updates}}
+#' 
+#' @description Internal function within \code{\link{pca_full}} that initialises
+#'  most model parameters. WARNING: does not initialise all parameters by itself
+#'  correctly (since this depends on context) and so care should be taken when 
+#'  using as a standalone function.
+#'  
+#' @details Random initialisations are set for the loadings and scores matrices.
+#'  Diagonal matrices are set for the elements of \code{Av} and \code{Sv}. \code{V}
+#'  is initialised to 1 and \code{Muv} is initialised to a vector of 1s.
+#' 
+#' @param p \code{numeric} -- the number of variables
+#' @param n \code{numeric} -- the number of observations
+#' @param ncomp \code{numeric} -- the number of components/latent variables
+#' @param verbose \code{logical} -- whether extra output should be displayed
+#' 
+#' @return {A \code{list} of length 7:
+#'  \describe{
+#'  \item{A}{\code{matrix} -- initialised loadings matrix with observed variables
+#'   in rows and latent variables in columns.}
+#'  \item{S}{\code{matrix} -- initialised factor scores matrix with latent variables
+#'   in rows and observations in columns.}
+#'  \item{V}{\code{numeric} -- scalar value corresponding to the initialised 
+#'  variance of the error parameter.}
+#'  \item{Av}{\code{array} -- initialised covariance matrices of the rows of A.}
+#'  \item{Sv}{\code{array} -- initialised covariance matrices of the rows of S.}
+#'  \item{Muv}{\code{numeric} -- the initialisation of the prior variance of Mu.}
+#'  }
+#' }
+#' 
+#' @examples 
+#' init.model <- initParms(p=10, n=10, ncomp=2, verbose = TRUE)
+#' init.model$A
+#' init.model$Av
 initParms <- function(p, n, ncomp, verbose=TRUE)
 {
   if(verbose) {
@@ -412,7 +444,39 @@ initParms <- function(p, n, ncomp, verbose=TRUE)
   return(list(A = A, S = S, Mu = Mu, V = V, Av = Av, Sv = Sv, Muv = Muv))
 }
 
-
+#' @title Subtract the row means from a matrix of data with missing values
+#' 
+#' @description internal function within \code{\link{pca_full}} to subtract the row means
+#'  from a matrix of data using only the observed values. Offers little utility 
+#'  standalone.
+#' 
+#' @param Mu \code{numeric} -- the sample mean of the observed variables.
+#' @param X \code{matrix} -- the data matrix with variables in rows and 
+#'  observations in columns.
+#' @param M \code{matrix} -- logical matrix whose values indicate whether
+#'  the corresponding entry in \code{X} is observed.
+#' @param p \code{numeric} -- the number of variables.
+#' @param n \code{numeric} -- the number of observations.
+#' @param update_bias \code{logical} -- whether the mean should be subtracted.
+#'  or not.
+#' @param verbose \code{logical} -- whether extra output should be displayed.
+#' 
+#' @return \code{X} \code{matrix} -- centered data matrix.
+#' 
+#' @examples
+#' p <- 20
+#' n <- 7
+#' set.seed(10045)
+#' X <- matrix(rnorm(p*n), p, n)
+#' miss.inds <- sample(1:(p*n), (p*n)/4)
+#' X[miss.inds] <- NA
+#' M <- !is.na(X)
+#' Nobs_i <- rowSums(M)
+#' Mu <- rowSums(X, na.rm = TRUE) / Nobs_i
+#' update_bias <- TRUE
+#' Xcent <- subtractMu(Mu=Mu, X=X, M=M, p=p, n=n, update_bias=update_bias, verbose=TRUE)
+#' X-Xcent
+#' Mu # all observed values in each column equal to Mu
 subtractMu <- function(Mu, X, M, p, n, update_bias, verbose=TRUE)
 {
   if(verbose) {
@@ -425,19 +489,88 @@ subtractMu <- function(Mu, X, M, p, n, update_bias, verbose=TRUE)
 }
 
 
-
+#' @title Compute the root mean-squared error of a PCA projection
+#' 
+#' @description Root mean-squared error is the square root of the element-wise error's mean.
+#'  This is a useful quantity to display during parameter estimation in \code{\link{pca_updates}}
+#'  since it is a measure of how well the PCA projection is fitting the data.
+#' 
+#' @param X \code{matrix} -- the data matrix with variables in rows and 
+#'  observations in columns.
+#' @param A \code{matrix} -- initialised loadings matrix with observed variables
+#'   in rows and latent variables in columns.
+#' @param S \code{matrix} -- initialised factor scores matrix with latent variables
+#'   in rows and observations in columns.
+#' @param M \code{matrix} -- logical matrix whose values indicate whether
+#'  the corresponding entry in \code{X} is observed.
+#' @param ndata \code{numerical} -- the total number of observed values.
+#' @param verbose \code{logical} -- whether extra output should be displayed.
+#' 
+#' @return {A \code{list} of length 2:
+#'  \describe{
+#'  \item{errMx}{\code{matrix} -- matrix of element-wise differences (errors)
+#'  between the observed data and the PCA projection.}
+#'  \item{rms}{\code{numerical} -- root mean-squared error of the PCA
+#'  projection.}
+#'  }
+#' }
+#' 
+#' @examples 
+#' p <- 20
+#' n <- 7
+#' set.seed(10045)
+#' X <- matrix(rnorm(p*n), p, n)
+#' miss.inds <- sample(1:(p*n), (p*n)/4)
+#' X[miss.inds] <- NA
+#' M <- !is.na(X)
+#' Nobs_i <- rowSums(M)
+#' Mu <- rowSums(X, na.rm = TRUE) / Nobs_i
+#' update_bias <- TRUE
+#' Xcent <- subtractMu(Mu=Mu, X=X, M=M, p=p, n=n, update_bias=update_bias, verbose=TRUE)
+#' init.model <- initParms(p=p, n=n, ncomp=2, verbose = TRUE)
+#' compute_rms(X=X, A=init.model$A, S=init.model$S, M=M, ndata=sum(Nobs_i), verbose=TRUE)
 compute_rms <- function(X, A, S, M, ndata, verbose=TRUE)
 {
   if(verbose) {
     cat("Computing rms... \n")
   }
   errMx <- (X - A%*%S)*M
-  rms   <- sqrt(sum(errMx^2)/ndata)
+  rms   <- sqrt(sum(errMx^2, na.rm = TRUE)/ndata)
   list(errMx = errMx, rms = rms)
 }
 
 
-
+#' @title Compute the log-likelihood of the observed data given PCA parameter estimates
+#' 
+#' @description The log-likelihood of the data for probabilistic PCA is known to be
+#'  multivariate Gaussian. Using this, one can check the log-likelihood value of the
+#'  observed data values given the parameter estimates from the PCA model. This can 
+#'  be useful to compare different models.
+#' 
+#' @param dat \code{matrix} -- the data matrix with variables in rows and 
+#'  observations in columns.
+#' @param covmat \code{matrix} -- the estimated covariance matrix.
+#' @param meanvec \code{numeric} -- the estimated mean vector.
+#' @param verbose \code{logical} -- whether extra output should be displayed.
+#' 
+#' @return the loglikelihood value
+#' 
+#' @examples 
+#' p <- 20
+#' n <- 7
+#' set.seed(10045)
+#' X <- matrix(rnorm(p*n), p, n)
+#' miss.inds <- sample(1:(p*n), (p*n)/4)
+#' X[miss.inds] <- NA
+#' M <- !is.na(X)
+#' Nobs_i <- rowSums(M)
+#' Mu <- rowSums(X, na.rm = TRUE) / Nobs_i
+#' Mu2 <- rep(0, p)
+#' covmat <- diag(p)
+#' # using sample mean
+#' compute_loglikeobs(dat=X, covmat=covmat, meanvec=Mu, verbose=TRUE)
+#' # using zero mean
+#' compute_loglikeobs(dat=X, covmat=covmat, meanvec=Mu2, verbose=TRUE)
 compute_loglikeobs <- function(dat, covmat, meanvec, verbose=TRUE)
 {
   if (verbose){
@@ -507,7 +640,92 @@ compute_loglikeobs <- function(dat, covmat, meanvec, verbose=TRUE)
 }
 
 
-
+#' @title Compute the log-likelihood of the observed data given PCA parameter estimates
+#' 
+#' @description The log-likelihood of the data for probabilistic PCA is known to be
+#'  multivariate Gaussian. Using this, one can check the log-likelihood value of the
+#'  observed data values given the parameter estimates from the PCA model. This can 
+#'  be useful to compare different models.
+#' 
+#' @param dat \code{matrix} -- the data matrix with variables in rows and 
+#'  observations in columns.
+#' @param A \code{matrix} -- estimated loadings matrix with observed variables
+#'   in rows and latent variables in columns.
+#' @param S \code{matrix} -- estimated factor scores matrix with latent variables
+#'   in rows and observations in columns.
+#' @param covmat \code{matrix} -- the estimated covariance matrix.
+#' @param meanvec \code{numeric} -- the estimated mean vector.
+#' @param verbose \code{logical} -- whether extra output should be displayed.
+#' 
+#' @return the loglikelihood value
+#' 
+#' @examples 
+#' p <- 20
+#' n <- 20
+#' set.seed(10045)
+#'   verbose <- 1
+#'   bias <- 1
+#'   rotate2pca <- 1
+#'   ncomp <- 2
+#'   maxiters <- 1000
+#'   opts <- list(init='random',
+#'    maxiters=as.numeric(1000),
+#'    niter_broadprior=as.numeric(100),
+#'    earlystop=as.numeric(0)
+#'   )
+#'   use_prior = 1
+#'   use_postvar = 1
+#'   X <- matrix(rnorm(p*n), p, n)
+#'   miss.inds <- sample(1:(p*n), round(p*n/10))
+#'   X[miss.inds] <- NaN
+#'   Xsaved <- X
+#'   M <- !is.nan(X)
+#'   X[X==0]      <- .Machine$double.eps
+#'   X[is.nan(X)] <- 0
+#'   
+#'   notmiss <- which(X!=0, arr.ind = TRUE)
+#'   IX      <- notmiss[,1]
+#'   JX      <- notmiss[,2]
+#'   
+#'   Nobs_i = rowSums(M)
+#'   ndata   <- length(IX)
+#'   # C++ indexing
+#'   IX <- IX -1 
+#'   JX <- JX -1
+#'   
+#'   initialisedParms <- initParms(p, n, ncomp, verbose = verbose)
+#'   A   <- initialisedParms$A
+#'   S   <- initialisedParms$S
+#'   Mu  <- initialisedParms$Mu
+#'   V   <- initialisedParms$V
+#'   Av  <- initialisedParms$Av
+#'   Sv  <- initialisedParms$Sv
+#'   Muv <- initialisedParms$Muv
+#'   Va  <- 1000*rep(1,ncomp)
+#'   Vmu <- 1000
+#'   Mu <- rowSums(X) / Nobs_i
+#'   computedRMS <- compute_rms(X, A, S, M, ndata, verbose = verbose)
+#'   errMx       <- computedRMS$errMx
+#'   rms         <- computedRMS$rms
+#'   hpVa <- 0.001
+#'   hpVb <- 0.001
+#'   hpV  <- 0.001
+#'   Isv <- rep(0, 2)
+#'   # data centering
+#'   X <- subtractMu(Mu, X, M, p, n, bias, verbose = verbose) 
+#'   ppcaOutput <- pca_updates(X=X, V=V, A=A, Va=Va, Av = Av, S = S, Sv = Sv, 
+#'   Mu = Mu, Muv = Muv, Vmu = Vmu,
+#'   hpVa = hpVa, hpVb = hpVb, hpV = hpV, ndata = ndata, Nobs_i = Nobs_i,
+#'   Isv = Isv, M = M, IX = IX, JX = JX, rms = rms, errMx = errMx, 
+#'   bias = bias, rotate2pca = rotate2pca, niter_broadprior = opts$niter_broadprior, 
+#'   use_prior = use_prior, use_postvar = use_postvar,
+#'   maxiters = maxiters, verbose = verbose)
+#'   # initialised model log-likelihood
+#'   compute_loglikeimp(dat=Xsaved, A=A, S=S, covmat=tcrossprod(A)+diag(p),
+#'   meanvec=Mu, verbose=TRUE)
+#'   # estimated model log-likelihood
+#'   compute_loglikeimp(dat=Xsaved, A=ppcaOutput$W, S=t(ppcaOutput$scores), covmat=ppcaOutput$C,
+#'   meanvec=ppcaOutput$m, verbose=TRUE)
 compute_loglikeimp <- function(dat, A, S, covmat, meanvec, verbose=TRUE)
 {
   if (verbose) {

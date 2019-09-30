@@ -125,7 +125,7 @@ within \code{pca_full}.
   use_prior = 1
   use_postvar = 1
   X <- matrix(rnorm(50), p, n)
-  X <- t(scale(t(X), center=TRUE, scale=FALSE)) # mean 0
+  X <- t(scale(t(X), center=TRUE, scale=FALSE))
   IX <- sample(1:p, 10)
   JX <- sample(1:n, 10)
   X[IX, JX] <- 0
