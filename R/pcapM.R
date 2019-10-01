@@ -52,6 +52,49 @@
 #' @export
 #'
 #' @examples
+#' # simulate a dataset from a zero mean factor model X = Wz + epsilon
+#' # start off by generating a random binary connectivity matrix
+#' n.factors <- 5
+#' n.genes <- 200
+#' # with dense connectivity
+#' # set.seed(20)
+#' conn.mat <- matrix(rbinom(n = n.genes*n.factors,
+#'                           size = 1, prob = 0.7), c(n.genes, n.factors))
+#' 
+#' # now generate a loadings matrix from this connectivity
+#' loading.gen <- function(x){
+#'   ifelse(x==0, 0, rnorm(1, 0, 1))
+#' }
+#' 
+#' W <- apply(conn.mat, c(1, 2), loading.gen)
+#' 
+#' # generate factor matrix
+#' n.samples <- 100
+#' z <- replicate(n.samples, rnorm(n.factors, 0, 1))
+#' 
+#' # generate a noise matrix
+#' sigma.sq <- 0.1
+#' epsilon <- replicate(n.samples, rnorm(n.genes, 0, sqrt(sigma.sq)))
+#' 
+#' # by the ppca equations this gives us the data matrix
+#' X <- W%*%z + epsilon
+#' WWt <- tcrossprod(W)
+#' Sigma <- WWt + diag(sigma.sq, n.genes)
+#' 
+#' # select 10% of entries to make missing values
+#' missFrac <- 0.1
+#' inds <- sample(x = 1:length(X),
+#'                size = ceiling(length(X)*missFrac),
+#'                replace = FALSE)
+#' 
+#' # replace them with NAs in the dataset
+#' missing.dataset <- X
+#' missing.dataset[inds] <- NA
+#' 
+#' # run ppca
+#' ppm <- pcapM(t(missing.dataset), nPcs=5, method="bpca", seed=2009, 
+#' maxIterations=1000, center=TRUE, loglike=TRUE, verbose=TRUE)
+#' 
 pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
                   maxIterations=1000, center = TRUE, 
                   scale = c("none", "pareto", "vector", "uv"), 
@@ -72,7 +115,7 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
   if(is.null(scale)){
     scale = "none"
   }
-  if(!scale %in% c("none", "pareto", "vector", "uv")){
+  if(!(scale %in% c("none", "pareto", "vector", "uv"))){
     stop("please provide a valid scaling method")
   }
   if(is.null(center)){
