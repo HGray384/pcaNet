@@ -129,7 +129,7 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
   myMat <- ppcaOutput$myMat;
   
   # Additional processing from pcaMethods to orthonormalise:
-  Worth <- pcaMethods:::orth(ppcaOutput$W)
+  Worth <- orthMat(ppcaOutput$W)
   evs   <- eigen(cov(myMat %*% Worth))
   vals  <- evs[[1]]
   vecs  <- evs[[2]]
@@ -185,4 +185,88 @@ ppcapM <- function(myMat, nPcs=2, seed=NA, threshold=1e-4, maxIterations=1000,
   
   return(output)
   
+}
+
+
+#' @title Calculate an orthonormal basis
+#' 
+#' @description A copied (unexported) function from \code{\link{pcaMethods}}. 
+#'  ONB = orth(mat) is an orthonormal basis for the range of matrix mat. That is,
+#'  ONB' * ONB = I, the columns of ONB span the same space as the columns of mat, 
+#'  and the number of columns of ONB is the rank of mat.
+#' 
+#' @param mat \code{matrix} -- matrix to calculate the orthonormal basis of
+#' @param skipInac \code{logical} -- do not include components with precision below
+#'  \code{.Machine$double.eps} if \code{TRUE}
+#'  
+#' @return orthonormal basis for the range of \code{mat}
+#' 
+#' @seealso \code{\link[pcaMethods:orth]{orth}}
+#' 
+#' @author Wolfram Stacklies
+#' 
+#' @references Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
+#'  Selbig, J., 2007. \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
+#'  
+#' @examples 
+#' set.seed(102)
+#' X <- matrix(rnorm(10), 5, 2)
+#' norm(X[,1], type="2")
+#' norm(X[,2], type="2")
+#' t(X[,1])%*%X[,2]
+#' Xorth <- orthMat(X)
+#' # now unit norms
+#' norm(Xorth[,1], type="2")
+#' norm(Xorth[,2], type="2")
+#' # and zero dot product
+#' t(Xorth[,1])%*%Xorth[,2]
+orthMat <- function(mat, skipInac = FALSE) 
+{
+  if (nrow(mat) > ncol(mat)) {
+    leftSVs <- ncol(mat)
+  }
+  else {
+    leftSVs <- nrow(mat)
+  }
+  result <- svd(mat, nu = leftSVs, nv = ncol(mat))
+  U <- result[[2]]
+  S <- result[[1]]
+  V <- result[[3]]
+  m <- nrow(mat)
+  n <- ncol(mat)
+  if (m > 1) {
+    s <- diag(S, nrow = length(S))
+  }
+  else if (m == 1) {
+    s <- S[1]
+  }
+  else {
+    s <- 0
+  }
+  tol <- max(m, n) * max(s) * .Machine$double.eps
+  r <- sum(s > tol)
+  if (r < ncol(U)) {
+    if (skipInac) {
+      warning("Precision for components ", r + 1, " - ", 
+              ncol(U), " is below .Machine$double.eps. \n", 
+              "Results for those components are likely to be inaccurate!!\n", 
+              "These component(s) are not included in the returned solution!!\n")
+    }
+    else {
+      warning("Precision for components ", r + 1, " - ", 
+              ncol(U), " is below .Machine$double.eps. \n", 
+              "Results for those components are likely to be inaccurate!!\n")
+    }
+  }
+  if (skipInac) {
+    ONB <- U[, 1:r, drop = FALSE]
+    rownames(ONB) <- labels(mat[, 1:r, drop = FALSE])[[1]]
+    colnames(ONB) <- labels(mat[, 1:r, drop = FALSE])[[2]]
+  }
+  else {
+    ONB <- U
+    rownames(ONB) <- labels(mat)[[1]]
+    colnames(ONB) <- labels(mat)[[2]]
+  }
+  return(ONB)
 }
