@@ -54,7 +54,7 @@ sum_j^n (X - \hat{X})^2 / \sum_i^p \sum_j^n(X^2)} for the matrix
 \eqn{X} which has \eqn{n} rows and \eqn{p} columns. For a given
 number of PC's X is estimated as \eqn{\hat{X}=TP'} (T are scores
 and P are loadings). Although this defines the leave-one-out
-cross-validation this is  not what is performed if fold is less
+cross-validation this is not what is performed if fold is less
 than the number of rows and/or columns.  In 'impute' type CV,
 diagonal rows of elements in the matrix are deleted and the
 re-estimated.  In 'krzanowski' type CV, rows are sequentially left
@@ -82,6 +82,9 @@ barplot(q2, main="Krzanowski CV", xlab="Number of PCs",
 \references{
 Krzanowski, WJ. Cross-validation in principal
 component analysis. Biometrics. 1987(43):3,575-584
+}
+\seealso{
+\code{\link[pcaMethods:Q2]{Q2}}
 }
 \author{
 Henning Redestig, Ondrej Mikula

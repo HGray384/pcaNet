@@ -13,7 +13,7 @@ arma::mat mrdivide(arma::mat A, arma::mat B)
 //' Perform parameter updates for PPCA using the Expectation-Maximisation framework
 //' from Porta (2005) and also in the R-package \code{\link{pcaMethods}} (Stacklies, 2007).
 //' Not recommended to use standalone, rather it is called from within
-//' \code{\link{bpcapM}} and its wrapper \code{\link{pcapM}}.
+//' \code{\link{ppcapM}} and its wrapper \code{\link{pcapM}}.
 //' 
 //' @param myMat \code{matrix} -- data matrix with observations in rows and 
 //' variables in columns. (Note that this is the transpose of \code{X} in
@@ -30,7 +30,7 @@ arma::mat mrdivide(arma::mat A, arma::mat B)
 //' value stop the algorithm.
 //' @param maxIterations \code{numeric} -- the maximum number of iterations to be completed.
 //' 
-//' @return {A \code{list} of 6 elements:
+//' @return {A \code{list} of 4 elements:
 //' \describe{
 //' \item{W}{\code{matrix} -- the estimated loadings.}
 //' \item{ss}{\code{numeric} -- the estimated model variance.}
@@ -45,6 +45,26 @@ arma::mat mrdivide(arma::mat A, arma::mat B)
 //'  
 //'  Stacklies, W., Redestig, H., Scholz, M., Walther, D. and 
 //'  Selbig, J., 2007. \href{https://doi.org/10.1093/bioinformatics/btm069}{doi}.
+//'  
+//' @examples
+//' set.seed(102)
+//' N <- 20
+//' D <- 20
+//' nPcs <- 2
+//' maxIterations <- 1000
+//' X <- matrix(rnorm(50), D, N)
+//' X <- scale(X, center=TRUE, scale=FALSE) # mean 0
+//' covX <- cov(X)
+//' IX <- sample(1:D, 10)
+//' JX <- sample(1:N, 10)
+//' nMissing <- length(IX)+length(JX)
+//' X[JX, IX] <- 0
+//' hidden <- which(X==0)
+//' threshold <- 1e-4
+//' r <- sample(N)
+//' W <- t(X[r[1:nPcs], ,drop = FALSE])
+//' W <- matrix(rnorm(W), nrow(W), ncol(W), dimnames = labels(W) )
+//' ppcaNetOutput <- ppcaNet(X, N, D, W, hidden, nMissing, nPcs, threshold, maxIterations)
 //' 
 // [[Rcpp::export()]]
 List ppcaNet (arma::mat myMat,

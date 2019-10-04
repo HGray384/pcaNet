@@ -28,7 +28,7 @@ using namespace Rcpp ;
 //' parameter \code{tau}. Updates for which the change in \code{tau} are below this threshold
 //' value stop the algorithm.
 //' @param maxIterations \code{numeric} -- the maximum number of iterations to be completed.
-//' @return {A \code{list} of 6 elements:
+//' @return {A \code{list} of 5 elements:
 //' \describe{
 //' \item{W}{\code{matrix} -- the estimated loadings.}
 //' \item{ss}{\code{numeric} -- the estimated model variance.}
@@ -55,7 +55,6 @@ using namespace Rcpp ;
 //'   nomissIndex <- which(rowSums(X!=0)==N)
 //'   missIndex <- which(rowSums(X!=0)!=N)
 //'   threshold <- 1e-4
-//'   maxIterations <- 1000
 //'   bpcaNetOutput <- bpcaNet(myMat=X, covy=covX, N=N, D=D, hidden=hidden,
 //'     numberOfNonNAvaluesInEachCol=numberOfNonNAvaluesInEachCol,
 //'     nomissIndex=nomissIndex, missIndex=missIndex, nMissing=nMissing,

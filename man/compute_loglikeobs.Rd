@@ -17,7 +17,7 @@ observations in columns.}
 \item{verbose}{\code{logical} -- whether extra output should be displayed.}
 }
 \value{
-the loglikelihood value
+the log-likelihood value
 }
 \description{
 The log-likelihood of the data for probabilistic PCA is known to be

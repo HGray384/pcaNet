@@ -48,7 +48,16 @@
 #' @export
 #' 
 #' @seealso \code{\link{igraph}}, \code{\link{fdrtool}}
-#'
+#' 
+#' @references Strimmer, K., 2008.
+#' \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-303}{link}.
+#' 
+#' Strimmer, K., 2008.
+#' \href{https://doi.org/10.1093/bioinformatics/btn209}{doi}.
+#' 
+#' Csardi, G. and Nepusz, T., 2006.
+#' \href{http://www.interjournal.org/manuscript_abstract.php?361100992.}{link}.
+#' 
 #' @examples
 #' #' # simulate a dataset from a zero mean factor model X = Wz + epsilon
 #' # start off by generating a random binary connectivity matrix

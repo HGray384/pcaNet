@@ -55,8 +55,8 @@ converge.}
 }}
 }
 \description{
-Implements the PPCA algorithms from (cite), previously
-  only available in MATLAB. One element of the output is a pcaRes 
+Implements the PPCA algorithms from See Ilin and Raiko (2010),
+  previously only available in MATLAB. One element of the outputs is a pcaRes 
   object, providing an interface between PCAMV and pcaMethods.
 }
 \details{
@@ -64,10 +64,10 @@ The \code{algorithm} argument provides the option of
   performing either 'ppca' for PPCA, 'vb' for BPCA using a 
   variational approximation, or 'map' for a variational 
   approximation ignoring posterior uncertainty (for faster
-  computation). See (cite) for the full models. Setting 
+  computation). See Ilin and Raiko (2010) for the full models. Setting 
   \code{rotate2pca} will perform a post-estimation rotation of
   the scores and loadings matrices so that they satisfy the
-  PCA conditions of orthonormality, see (cite) for the 
+  PCA conditions of orthonormality, see See Ilin and Raiko (2010) for the 
   derivations. \code{loglike} indicates whether 
   log-likelihood values for the resulting estimates should 
   be computed. This can be useful to compare different algorithms.
@@ -115,4 +115,8 @@ missing.dataset[inds] <- NA
 # run ppca
 ppf <- pca_full(missing.dataset, ncomp=5, algorithm="vb", maxiters=5,
 bias=TRUE, rotate2pca=FALSE, loglike=TRUE, verbose=TRUE)
+}
+\references{
+Ilin, A. and Raiko, T., 2010.
+ \href{http://www.jmlr.org/papers/v11/ilin10a.html}{link}
 }

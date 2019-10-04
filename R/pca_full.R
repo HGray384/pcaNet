@@ -1,7 +1,7 @@
 #' @title A wrapper for PCAMV (MATLAB) function implementations
 #'
-#' @description Implements the PPCA algorithms from (cite), previously
-#'   only available in MATLAB. One element of the output is a pcaRes 
+#' @description Implements the PPCA algorithms from See Ilin and Raiko (2010),
+#'   previously only available in MATLAB. One element of the outputs is a pcaRes 
 #'   object, providing an interface between PCAMV and pcaMethods.
 #'
 #' @param X \code{matrix} -- Data matrix with 
@@ -29,10 +29,10 @@
 #'   performing either 'ppca' for PPCA, 'vb' for BPCA using a 
 #'   variational approximation, or 'map' for a variational 
 #'   approximation ignoring posterior uncertainty (for faster
-#'   computation). See (cite) for the full models. Setting 
+#'   computation). See Ilin and Raiko (2010) for the full models. Setting 
 #'   \code{rotate2pca} will perform a post-estimation rotation of
 #'   the scores and loadings matrices so that they satisfy the
-#'   PCA conditions of orthonormality, see (cite) for the 
+#'   PCA conditions of orthonormality, see See Ilin and Raiko (2010) for the 
 #'   derivations. \code{loglike} indicates whether 
 #'   log-likelihood values for the resulting estimates should 
 #'   be computed. This can be useful to compare different algorithms.
@@ -54,6 +54,9 @@
 #'   see \linkS4class{pcaRes}.}
 #' }}
 #' @export
+#'
+#' @references Ilin, A. and Raiko, T., 2010.
+#'  \href{http://www.jmlr.org/papers/v11/ilin10a.html}{link}
 #'
 #' @examples
 #' # simulate a dataset from a zero mean factor model X = Wz + epsilon
@@ -427,6 +430,7 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
 #'  using as a standalone function.
 #'  
 #' @details Random initialisations are set for the loadings and scores matrices.
+#'  The mean vector is initialised to \code{c()} and set outside this function.
 #'  Diagonal matrices are set for the elements of \code{Av} and \code{Sv}. \code{V}
 #'  is initialised to 1 and \code{Muv} is initialised to a vector of 1s.
 #' 
@@ -441,6 +445,7 @@ pca_full <- function(X, ncomp=NA, algorithm = "vb", maxiters = 1000,
 #'   in rows and latent variables in columns.}
 #'  \item{S}{\code{matrix} -- initialised factor scores matrix with latent variables
 #'   in rows and observations in columns.}
+#'   \item{Mu}{\code{numeric} -- initialised mean vector.}
 #'  \item{V}{\code{numeric} -- scalar value corresponding to the initialised 
 #'  variance of the error parameter.}
 #'  \item{Av}{\code{array} -- initialised covariance matrices of the rows of A.}
@@ -595,7 +600,7 @@ compute_rms <- function(X, A, S, M, ndata, verbose=TRUE)
 #' @param meanvec \code{numeric} -- the estimated mean vector.
 #' @param verbose \code{logical} -- whether extra output should be displayed.
 #' 
-#' @return the loglikelihood value
+#' @return the log-likelihood value
 #' 
 #' @examples 
 #' p <- 20
@@ -699,7 +704,7 @@ compute_loglikeobs <- function(dat, covmat, meanvec, verbose=TRUE)
 #' @param meanvec \code{numeric} -- the estimated mean vector.
 #' @param verbose \code{logical} -- whether extra output should be displayed.
 #' 
-#' @return the loglikelihood value
+#' @return the log-likelihood value
 #' 
 #' @examples 
 #' p <- 20

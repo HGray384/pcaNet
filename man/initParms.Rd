@@ -22,6 +22,7 @@ initParms(p, n, ncomp, verbose = TRUE)
   in rows and latent variables in columns.}
  \item{S}{\code{matrix} -- initialised factor scores matrix with latent variables
   in rows and observations in columns.}
+  \item{Mu}{\code{numeric} -- initialised mean vector.}
  \item{V}{\code{numeric} -- scalar value corresponding to the initialised 
  variance of the error parameter.}
  \item{Av}{\code{array} -- initialised covariance matrices of the rows of A.}
@@ -38,6 +39,7 @@ Internal function within \code{\link{pca_full}} that initialises
 }
 \details{
 Random initialisations are set for the loadings and scores matrices.
+ The mean vector is initialised to \code{c()} and set outside this function.
  Diagonal matrices are set for the elements of \code{Av} and \code{Sv}. \code{V}
  is initialised to 1 and \code{Muv} is initialised to a vector of 1s.
 }

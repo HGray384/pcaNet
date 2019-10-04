@@ -1,6 +1,6 @@
 Package: pcaNet
 Type: Package
-Title: Probabilistic principal components analysis
+Title: Probabilistic principal components analysis - covariance estimation and network reconstruction
 Version: 1.0
 Date: 2019-09-28
 Author: Paul DW Kirk and Harry Gray

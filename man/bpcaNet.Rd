@@ -41,7 +41,7 @@ value stop the algorithm.}
 \item{maxIterations}{\code{numeric} -- the maximum number of iterations to be completed.}
 }
 \value{
-{A \code{list} of 6 elements:
+{A \code{list} of 5 elements:
 \describe{
 \item{W}{\code{matrix} -- the estimated loadings.}
 \item{ss}{\code{numeric} -- the estimated model variance.}
@@ -73,7 +73,6 @@ set.seed(102)
   nomissIndex <- which(rowSums(X!=0)==N)
   missIndex <- which(rowSums(X!=0)!=N)
   threshold <- 1e-4
-  maxIterations <- 1000
   bpcaNetOutput <- bpcaNet(myMat=X, covy=covX, N=N, D=D, hidden=hidden,
     numberOfNonNAvaluesInEachCol=numberOfNonNAvaluesInEachCol,
     nomissIndex=nomissIndex, missIndex=missIndex, nMissing=nMissing,
