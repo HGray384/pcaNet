@@ -4,8 +4,14 @@
 \alias{bpcapM}
 \title{Bayesian PCA (\code{pcaMethods} version)}
 \usage{
-bpcapM(myMat, nPcs = NA, threshold = 1e-04, maxIterations = 100,
-  loglike = TRUE, verbose = TRUE)
+bpcapM(
+  myMat,
+  nPcs = NA,
+  threshold = 1e-04,
+  maxIterations = 100,
+  loglike = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Pre-processed matrix (centered,

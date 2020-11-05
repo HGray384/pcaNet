@@ -4,8 +4,16 @@
 \alias{pca_full}
 \title{A wrapper for PCAMV (MATLAB) function implementations}
 \usage{
-pca_full(X, ncomp = NA, algorithm = "vb", maxiters = 1000,
-  bias = TRUE, rotate2pca = TRUE, loglike = TRUE, verbose = TRUE)
+pca_full(
+  X,
+  ncomp = NA,
+  algorithm = "vb",
+  maxiters = 1000,
+  bias = TRUE,
+  rotate2pca = TRUE,
+  loglike = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{X}{\code{matrix} -- Data matrix with 

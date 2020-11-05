@@ -4,8 +4,17 @@
 \alias{ppcaNet}
 \title{Probabilistic PCA updates}
 \usage{
-ppcaNet(myMat, N, D, W, hidden, nMissing, nPcs = 2L, threshold = 1e-05,
-  maxIterations = 1000L)
+ppcaNet(
+  myMat,
+  N,
+  D,
+  W,
+  hidden,
+  nMissing,
+  nPcs = 2L,
+  threshold = 1e-05,
+  maxIterations = 1000L
+)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- data matrix with observations in rows and 

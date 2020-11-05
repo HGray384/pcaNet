@@ -4,10 +4,36 @@
 \alias{pca_updates}
 \title{PPCA updates}
 \usage{
-pca_updates(X, V, A, Av, Va, S, Sv, Mu, Muv, Vmu, hpVa, hpVb, hpV, ndata,
-  Nobs_i, Isv, M, IX, JX, rms, errMx, bias = 1L, rotate2pca = 1L,
-  niter_broadprior = 100L, use_prior = 1L, use_postvar = 1L,
-  maxiters = 1000L, verbose = 1L)
+pca_updates(
+  X,
+  V,
+  A,
+  Av,
+  Va,
+  S,
+  Sv,
+  Mu,
+  Muv,
+  Vmu,
+  hpVa,
+  hpVb,
+  hpV,
+  ndata,
+  Nobs_i,
+  Isv,
+  M,
+  IX,
+  JX,
+  rms,
+  errMx,
+  bias = 1L,
+  rotate2pca = 1L,
+  niter_broadprior = 100L,
+  use_prior = 1L,
+  use_postvar = 1L,
+  maxiters = 1000L,
+  verbose = 1L
+)
 }
 \arguments{
 \item{X}{\code{matrix} -- data matrix with variables in rows and 

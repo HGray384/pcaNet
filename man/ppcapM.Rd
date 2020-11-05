@@ -4,8 +4,15 @@
 \alias{ppcapM}
 \title{Probabilistic PCA (pcaMethods version)}
 \usage{
-ppcapM(myMat, nPcs = 2, seed = NA, threshold = 1e-04,
-  maxIterations = 1000, loglike = TRUE, verbose = TRUE)
+ppcapM(
+  myMat,
+  nPcs = 2,
+  seed = NA,
+  threshold = 1e-04,
+  maxIterations = 1000,
+  loglike = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Pre-processed matrix (centered,

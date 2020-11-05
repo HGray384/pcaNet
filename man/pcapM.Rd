@@ -4,10 +4,18 @@
 \alias{pcapM}
 \title{A wrapper for pcaMethods function implementations}
 \usage{
-pcapM(myMat, nPcs = 2, method = "ppca", seed = NA,
-  threshold = 1e-04, maxIterations = 1000, center = TRUE,
-  scale = c("none", "pareto", "vector", "uv"), loglike = TRUE,
-  verbose = TRUE)
+pcapM(
+  myMat,
+  nPcs = 2,
+  method = "ppca",
+  seed = NA,
+  threshold = 1e-04,
+  maxIterations = 1000,
+  center = TRUE,
+  scale = c("none"),
+  loglike = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- Data matrix with 
@@ -35,7 +43,7 @@ steps.}
 
 \item{scale}{\code{c("none", "pareto", "vector", "uv")} --
 which method of scaling should be used? See 
-\code{\link[pcaMethods:pca]{pca}}.}
+\code{\link[pcaMethods:pca]{pca}}. Defaults to "none".}
 
 \item{loglike}{\code{logical} -- should the log-likelihood
 of the estimated parameters be returned? See Details.}

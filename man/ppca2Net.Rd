@@ -4,10 +4,19 @@
 \alias{ppca2Net}
 \title{Network reconstruction from PPCA}
 \usage{
-ppca2Net(ppcaOutput, plot = TRUE, verbose = TRUE, vertex.size = 10,
-  edge.width = 2, vertex.label.cex = 0.4, vertex.color = "cyan",
-  vertex.label.color = "black", edge.color = "pink",
-  vertex.label.family = "Helvetica", vertex.label = NULL)
+ppca2Net(
+  ppcaOutput,
+  plot = TRUE,
+  verbose = TRUE,
+  vertex.size = 10,
+  edge.width = 2,
+  vertex.label.cex = 0.4,
+  vertex.color = "cyan",
+  vertex.label.color = "black",
+  edge.color = "pink",
+  vertex.label.family = "Helvetica",
+  vertex.label = NULL
+)
 }
 \arguments{
 \item{ppcaOutput}{\code{list} -- the output object from running any

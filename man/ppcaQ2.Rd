@@ -4,9 +4,16 @@
 \alias{ppcaQ2}
 \title{Cross-validation for PCA}
 \usage{
-ppcaQ2(obj, originalData = obj$pcaMethodsRes@completeObs, fold = 5,
-  nruncv = 1, type = c("krzanowski", "impute"),
-  verbose = interactive(), variables = 1:(obj$pcaMethodsRes@nVar), ...)
+ppcaQ2(
+  obj,
+  originalData = obj$pcaMethodsRes@completeObs,
+  fold = 5,
+  nruncv = 1,
+  type = c("krzanowski", "impute"),
+  verbose = interactive(),
+  variables = 1:(obj$pcaMethodsRes@nVar),
+  ...
+)
 }
 \arguments{
 \item{obj}{A \code{pcaRes} object (result from previous PCA

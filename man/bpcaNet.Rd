@@ -4,9 +4,20 @@
 \alias{bpcaNet}
 \title{Bayesian PCA updates}
 \usage{
-bpcaNet(myMat, covy, N, D, hidden, numberOfNonNAvaluesInEachCol,
-  nomissIndex, missIndex, nMissing, nPcs = 2L, threshold = 1e-04,
-  maxIterations = 200L)
+bpcaNet(
+  myMat,
+  covy,
+  N,
+  D,
+  hidden,
+  numberOfNonNAvaluesInEachCol,
+  nomissIndex,
+  missIndex,
+  nMissing,
+  nPcs = 2L,
+  threshold = 1e-04,
+  maxIterations = 200L
+)
 }
 \arguments{
 \item{myMat}{\code{matrix} -- data matrix with observations in rows and 
