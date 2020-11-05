@@ -24,7 +24,7 @@
 #' @param center \code{logical} -- should the data be centered?
 #' @param scale \code{c("none", "pareto", "vector", "uv")} --
 #'   which method of scaling should be used? See 
-#'   \code{\link[pcaMethods:pca]{pca}}.
+#'   \code{\link[pcaMethods:pca]{pca}}. Defaults to "none".
 #' @param loglike \code{logical} -- should the log-likelihood
 #'   of the estimated parameters be returned? See Details.
 #' @param verbose \code{logical} -- verbose intermediary 
@@ -97,7 +97,7 @@
 #' 
 pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
                   maxIterations=1000, center = TRUE, 
-                  scale = c("none", "pareto", "vector", "uv"), 
+                  scale = c("none"), 
                   loglike = TRUE, verbose=TRUE) {
   ## preprocessing
   if (nPcs > ncol(myMat)) {
@@ -115,9 +115,14 @@ pcapM <- function(myMat, nPcs=2, method='ppca', seed=NA, threshold=1e-4,
   if(is.null(scale)){
     scale = "none"
   }
-  if(!(scale %in% c("none", "pareto", "vector", "uv"))){
-    stop("please provide a valid scaling method")
+  if (length(scale)!=1){
+    stop("scale must have length 1")
+  } else {
+    if(!(scale %in% c("none", "pareto", "vector", "uv"))){
+      stop("please provide a valid scaling method")
+    }
   }
+
   if(is.null(center)){
     center = FALSE
   }
